@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "511345868979",
+    "firebase_url": "https://urban-trails.firebaseio.com",
+    "project_id": "urban-trails",
+    "storage_bucket": "urban-trails.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511345868979:android:1cae3e1472fec6ba1270c6",
+        "android_client_info": {
+          "package_name": "edu.neu.madcourse.urban_trails"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "511345868979-criom1q8cu4klshc9uo9dd0e2d4et5vj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCySYh1h5Ae-jgsdeGNBpCiBMLBj4uK-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "511345868979-criom1q8cu4klshc9uo9dd0e2d4et5vj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

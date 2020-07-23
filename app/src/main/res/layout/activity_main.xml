@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BA5151">
+    android:background="#FAF4F4">
 
     <TextView
         android:id="@+id/welcome"
@@ -13,7 +13,7 @@
         android:fontFamily="sans-serif"
         android:text="@string/welcome"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#020101"
+        android:textColor="#040101"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="900px"
+        android:backgroundTint="#BA5151"
         android:fontFamily="@font/cousine_bold"
         android:onClick="onClickSignup"
         android:text="@string/sign_up"

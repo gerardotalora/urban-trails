@@ -9,9 +9,12 @@
         android:roundIcon="@mipmap/ic_urban_trails_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".SignupActivity"></activity>
+        <activity android:name=".FeedActivity"></activity>
+        <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity" android:theme="@style/SplashTheme">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

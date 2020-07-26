@@ -63,4 +63,8 @@ public class StartTrailFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_start_trail, container, false);
     }
+
+    public void onClick(View view) {
+
+    }
 }

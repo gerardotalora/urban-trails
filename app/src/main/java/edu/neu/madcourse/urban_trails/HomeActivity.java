@@ -16,7 +16,7 @@ import edu.neu.madcourse.urban_trails.fragments.SearchFragment;
 import edu.neu.madcourse.urban_trails.fragments.StarFragment;
 import edu.neu.madcourse.urban_trails.fragments.StartTrailFragment;
 
-public class FeedActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
 

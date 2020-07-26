@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_add_stop"
+        android:icon="@drawable/ic_add_stop"
+        android:title="Add Stop" />
+    <item
+        android:id="@+id/navigation_camera"
+        android:icon="@drawable/ic_camera"
+        android:title="Take Photo" />
+    <item
+        android:id="@+id/navigation_cancel"
+        android:icon="@drawable/ic_cancel"
+        android:title="End Trail" />
+</menu>

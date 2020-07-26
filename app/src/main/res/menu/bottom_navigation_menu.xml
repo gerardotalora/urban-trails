@@ -15,7 +15,7 @@
     <item
         android:id="@+id/navigation_star"
         android:icon="@drawable/ic_star"
-        android:title="Star Trails" />
+        android:title="Favorites" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile"

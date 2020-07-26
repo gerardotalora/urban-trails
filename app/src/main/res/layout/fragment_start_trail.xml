@@ -6,13 +6,4 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".fragments.StartTrailFragment" >
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/start-trail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:src="@drawable/ic_start_trail"
-        app:backgroundTint="@color/colorAccent" />
 </FrameLayout>

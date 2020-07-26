@@ -1,21 +1,26 @@
 package edu.neu.madcourse.urban_trails.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import edu.neu.madcourse.urban_trails.R;
+import edu.neu.madcourse.urban_trails.SignupActivity;
+import edu.neu.madcourse.urban_trails.TrailActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link StartTrailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StartTrailFragment extends Fragment {
+public class StartTrailFragment extends Fragment implements View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,7 +69,9 @@ public class StartTrailFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_start_trail, container, false);
     }
 
-    public void onClick(View view) {
-
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), TrailActivity.class);
+        startActivity(intent);
     }
 }

@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
-    >
+    tools:context=".TrailActivity">
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
         <!-- Main content -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -20,6 +20,7 @@
             android:background="@color/red"
             app:itemIconTint="@color/white"
             app:itemTextColor="@color/white"
-            app:menu="@menu/bottom_navigation_home" />
+            app:menu="@menu/bottom_navigation_trail" />
     </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

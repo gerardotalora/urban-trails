@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="900px"
-        android:backgroundTint="#BA5151"
+        android:backgroundTint="@color/red"
         android:fontFamily="@font/cousine_bold"
         android:onClick="onClickSignup"
         android:text="@string/sign_up"

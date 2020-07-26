@@ -4,4 +4,8 @@
     <string name="login">Log In</string>
     <string name="sign_up">Sign Up</string>
     <string name="go">Let\'s Go!</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
 </resources>

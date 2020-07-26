@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,16 +27,18 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
+    private EditText username;
     private EditText firstName;
     private EditText lastName;
     private EditText email;
     private EditText password;
     private EditText phoneNumber;
     private Handler handler = new Handler();
+    private final String TAG = "SignUpActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,25 +48,29 @@ public class SignupActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        username = findViewById(R.id.textUsername);
         firstName = findViewById(R.id.textFirstName);
         lastName = findViewById(R.id.textLastName);
         email = findViewById(R.id.textEmail);
         password = findViewById(R.id.textPassword);
         phoneNumber = findViewById(R.id.textPhone);
 
+//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+//        if (currentUser != null) {
+//
+//        }
     }
 
     public void onClick(View view) {
 
         SignUpUser signUpUser = new SignUpUser();
 
+        final String usernameString = username.getText().toString();
         final String firstNameString = firstName.getText().toString();
         final String lastNameString = lastName.getText().toString();
         final String emailString = email.getText().toString();
         final String passwordString = password.getText().toString();
         final String phoneNumberString = phoneNumber.getText().toString();
-
-        signUpUser.signUpUser(firstNameString, lastNameString, emailString, passwordString, phoneNumberString);
 
         if (!firstNameString.matches("^[a-zA-Z0-9]*$") || firstNameString.equals("")) {
             Toast.makeText(getApplicationContext(), "Please enter an alphanumeric firstName", Toast.LENGTH_LONG).show();
@@ -75,12 +82,15 @@ public class SignupActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter a password", Toast.LENGTH_LONG).show();
         } else if (phoneNumberString.equals("")) {
             Toast.makeText(getApplicationContext(), "Please enter a phone number", Toast.LENGTH_LONG).show();
+        } else if (!usernameString.matches("^[a-zA-Z0-9]*$") || usernameString.equals("")) {
+            Toast.makeText(getApplicationContext(), "Please enter a phone number", Toast.LENGTH_LONG).show();
         } else {
-            signUpUser.signUpUser(firstNameString, lastNameString, emailString, passwordString, phoneNumberString);
+            signUpUser.signUpUser(usernameString, firstNameString, lastNameString, emailString, passwordString, phoneNumberString);
         }
     }
 
     private class SignUpUser implements Runnable {
+        private String username;
         private String firstName;
         private String lastName;
         private String email;
@@ -91,7 +101,8 @@ public class SignupActivity extends AppCompatActivity {
         SignUpUser() {
         }
 
-        public void signUpUser(String firstName, String lastName, String email, String password, String phoneNumber) {
+        public void signUpUser(String username, String firstName, String lastName, String email, String password, String phoneNumber) {
+            this.username = username;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
@@ -103,31 +114,59 @@ public class SignupActivity extends AppCompatActivity {
         @Override
         public void run() {
 
+//            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<InstanceIdResult>() {
+//                @Override
+//                public void onSuccess(final InstanceIdResult instanceIdResult) {
+//                    final String token = instanceIdResult.getToken();
+//                    Log.v(TAG,token);
+//                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot snapshot) {
+//                            if (snapshot.hasChild(username)) {
+//                                user = snapshot.child(username).getValue(User.class);
+//
+//                                if (!user.getToken().equals(token)) {
+//                                    user.setToken(token);
+//                                    databaseReference.child("users").child(user.getUsername()).setValue(user);
+//                                }
+//                            } else {
+//                                user = new User(username, firstName, lastName, email, password, phoneNumber, token);
+//                                databaseReference.child("users").child(user.getUsername()).setValue(user);
+//                            }
+//                            startIntent(user);
+//                        }
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//                            showToast("Error connecting to database");
+//                        }
+//                    });
+//                }
+//            });
+
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
                     new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 task.getResult().getUser();
-                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignupActivity.this, new OnSuccessListener<InstanceIdResult>() {
+                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<InstanceIdResult>() {
                                     @Override
                                     public void onSuccess(final InstanceIdResult instanceIdResult) {
                                         final String token = instanceIdResult.getToken();
-                                        Log.v("Token",token);
-
+                                        Log.v(TAG,token);
                                         databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot snapshot) {
-                                                if (snapshot.hasChild(email)) {
-                                                    user = snapshot.child(email).getValue(User.class);
+                                                if (snapshot.hasChild(username)) {
+                                                    user = snapshot.child(username).getValue(User.class);
 
                                                     if (!user.getToken().equals(token)) {
                                                         user.setToken(token);
-                                                        databaseReference.child("users").child(user.getEmail()).setValue(user);
+                                                        databaseReference.child("users").child(user.getUsername()).setValue(user);
                                                     }
                                                 } else {
-                                                    user = new User(firstName, lastName, email, password, phoneNumber, token);
-                                                    databaseReference.child("users").child(user.getEmail()).setValue(user);
+                                                    user = new User(username, firstName, lastName, email, password, phoneNumber, token);
+                                                    databaseReference.child("users").child(user.getUsername()).setValue(user);
                                                 }
                                                 startIntent(user);
                                             }
@@ -138,6 +177,9 @@ public class SignupActivity extends AppCompatActivity {
                                         });
                                     }
                                 });
+                            } else {
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -158,7 +200,8 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         private void startIntent(User user) {
-            Intent intentHome = new Intent(SignupActivity.this, HomeActivity.class);
+            Intent intentHome = new Intent(SignUpActivity.this, HomeActivity.class);
+            intentHome.putExtra("USER_USERNAME", user.getUsername());
             intentHome.putExtra("USER_FIRST_NAME", user.getFirstName());
             intentHome.putExtra("USER_LAST_NAME", user.getLastName());
             intentHome.putExtra("USER_EMAIL", user.getEmail());

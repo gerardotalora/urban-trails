@@ -8,6 +8,7 @@ import java.util.List;
 @IgnoreExtraProperties
 public class User {
 
+    private String username;
     private String firstName;
     private String lastName;
     private String email;
@@ -20,7 +21,8 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String password, String phoneNumer, String token) {
+    public User(String username, String firstName, String lastName, String email, String password, String phoneNumer, String token) {
+        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -29,6 +31,14 @@ public class User {
         this.token = token;
         this.friends = new ArrayList<>();
         this.trails = new ArrayList<>();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {

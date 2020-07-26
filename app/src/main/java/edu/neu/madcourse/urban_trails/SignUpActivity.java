@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,10 +57,15 @@ public class SignUpActivity extends AppCompatActivity {
         password = findViewById(R.id.textPassword);
         phoneNumber = findViewById(R.id.textPhone);
 
-//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-//        if (currentUser != null) {
-//
-//        }
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            Toast.makeText(getApplicationContext(), "User is still signed in", Toast.LENGTH_LONG).show();
+            Log.v(TAG,"user already signed in with auth user");
+            String name = currentUser.getDisplayName();
+            Log.v(TAG,name);
+            GetUser getUser = new GetUser();
+            getUser.getUser(name);
+        }
     }
 
     public void onClick(View view) {
@@ -114,41 +121,27 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-//            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<InstanceIdResult>() {
-//                @Override
-//                public void onSuccess(final InstanceIdResult instanceIdResult) {
-//                    final String token = instanceIdResult.getToken();
-//                    Log.v(TAG,token);
-//                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot snapshot) {
-//                            if (snapshot.hasChild(username)) {
-//                                user = snapshot.child(username).getValue(User.class);
-//
-//                                if (!user.getToken().equals(token)) {
-//                                    user.setToken(token);
-//                                    databaseReference.child("users").child(user.getUsername()).setValue(user);
-//                                }
-//                            } else {
-//                                user = new User(username, firstName, lastName, email, password, phoneNumber, token);
-//                                databaseReference.child("users").child(user.getUsername()).setValue(user);
-//                            }
-//                            startIntent(user);
-//                        }
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//                            showToast("Error connecting to database");
-//                        }
-//                    });
-//                }
-//            });
-
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
                     new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                task.getResult().getUser();
+
+                                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(username)
+                                        .build();
+
+                                firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "User profile updated.");
+                                        }
+                                    }
+                                });
+
                                 FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<InstanceIdResult>() {
                                     @Override
                                     public void onSuccess(final InstanceIdResult instanceIdResult) {
@@ -189,26 +182,76 @@ public class SignUpActivity extends AppCompatActivity {
         public void runInNewThread() {
             new Thread(this).start();
         }
+    }
 
-        private void showToast(final String toastText) {
-            handler.post(new Runnable() {
+    private class GetUser implements Runnable {
+
+        private String username;
+        private User user;
+
+        public GetUser() {
+        }
+
+        public void getUser(String username) {
+            this.username = username;
+            this.runInNewThread();
+        }
+
+        @Override
+        public void run() {
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<InstanceIdResult>() {
                 @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG).show();
+                public void onSuccess(final InstanceIdResult instanceIdResult) {
+                    final String token = instanceIdResult.getToken();
+                    Log.v(TAG,token);
+                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.hasChild(username)) {
+                                user = snapshot.child(username).getValue(User.class);
+
+                                if (!user.getToken().equals(token)) {
+                                    user.setToken(token);
+                                    databaseReference.child("users").child(user.getUsername()).setValue(user);
+                                }
+                                startIntent(user);
+                            } else {
+                                showToast("User exists in Auth but not in the Database");
+                            }
+                            startIntent(user);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            showToast("Error connecting to database");
+                        }
+                    });
                 }
             });
         }
 
-        private void startIntent(User user) {
-            Intent intentHome = new Intent(SignUpActivity.this, HomeActivity.class);
-            intentHome.putExtra("USER_USERNAME", user.getUsername());
-            intentHome.putExtra("USER_FIRST_NAME", user.getFirstName());
-            intentHome.putExtra("USER_LAST_NAME", user.getLastName());
-            intentHome.putExtra("USER_EMAIL", user.getEmail());
-            intentHome.putExtra("USER_PASSWORD", user.getPassword());
-            intentHome.putExtra("USER_PHONE_NUMBER", user.getPhoneNumber());
-            intentHome.putExtra("USER_TOKEN", user.getToken());
-            startActivity(intentHome);
+        public void runInNewThread() {
+            new Thread(this).start();
         }
+    }
+
+    private void startIntent(User user) {
+        Intent intentHome = new Intent(SignUpActivity.this, HomeActivity.class);
+        intentHome.putExtra("USER_USERNAME", user.getUsername());
+        intentHome.putExtra("USER_FIRST_NAME", user.getFirstName());
+        intentHome.putExtra("USER_LAST_NAME", user.getLastName());
+        intentHome.putExtra("USER_EMAIL", user.getEmail());
+        intentHome.putExtra("USER_PASSWORD", user.getPassword());
+        intentHome.putExtra("USER_PHONE_NUMBER", user.getPhoneNumber());
+        intentHome.putExtra("USER_TOKEN", user.getToken());
+        startActivity(intentHome);
+    }
+
+    private void showToast(final String toastText) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

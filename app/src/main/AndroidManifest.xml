@@ -12,7 +12,7 @@
         <activity android:name=".TrailActivity"></activity>
         <activity android:name=".HomeFragment" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".SignupActivity" />
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".MainActivity"

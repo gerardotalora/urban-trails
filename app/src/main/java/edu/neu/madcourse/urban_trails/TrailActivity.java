@@ -12,8 +12,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavig
 
 public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
 
-    private static final String KEY_MAPS_FRAGMENT = "KEY_MAPS_FRAGMENT";
-
     private MapsFragment mapsFragment;
 
     @Override
@@ -21,12 +19,7 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trail);
 
-        mapsFragment = (MapsFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
-        if (savedInstanceState != null) {
-            //Restore the fragment's instance
-            mapsFragment = (MapsFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_MAPS_FRAGMENT);
-        }
+        mapsFragment = (MapsFragment) getSupportFragmentManager().findFragmentById(R.id.maps_fragment);
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(this);
@@ -35,24 +28,22 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        if (mapsFragment != null) {
-            //Save the fragment's instance
-            getSupportFragmentManager().putFragment(outState, KEY_MAPS_FRAGMENT, mapsFragment);
-        }
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        mapsFragment = (MapsFragment) getSupportFragmentManager().findFragmentById(R.id.maps_fragment);
         switch (menuItem.getItemId()) {
             case R.id.navigation_add_stop:
-                Toast.makeText(this, "Navigation Add Stop", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Navigation Add Stop", Toast.LENGTH_LONG).show();
+                mapsFragment.addStop();
                 break;
             case R.id.navigation_camera:
                 Toast.makeText(this, "Navigation Camera", Toast.LENGTH_LONG).show();
                 break;
             case R.id.navigation_end_trail:
-                Toast.makeText(this, "Navigation End Trail", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Navigation End Trail: " + mapsFragment.getTrail().size() + " stops", Toast.LENGTH_LONG).show();
+
                 break;
         }
         return false;

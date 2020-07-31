@@ -3,28 +3,18 @@ package edu.neu.madcourse.urban_trails;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
-import com.google.firebase.auth.FirebaseAuth;
-
-import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
-import edu.neu.madcourse.urban_trails.fragments.ProfileFragment;
-import edu.neu.madcourse.urban_trails.fragments.SearchFragment;
-import edu.neu.madcourse.urban_trails.fragments.StarFragment;
-import edu.neu.madcourse.urban_trails.fragments.StartTrailFragment;
 
 public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
 
     private static final String KEY_MAPS_FRAGMENT = "KEY_MAPS_FRAGMENT";
 
     private MapsFragment mapsFragment;
-    private BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +28,7 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
             mapsFragment = (MapsFragment) getSupportFragmentManager().getFragment(savedInstanceState, KEY_MAPS_FRAGMENT);
         }
 
-        bottomNavigation = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(this);
     }
 

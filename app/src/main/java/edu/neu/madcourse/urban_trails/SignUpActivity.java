@@ -40,7 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password;
     private EditText phoneNumber;
     private Handler handler = new Handler();
-    private final String TAG = "SignUpActivity";
+    private final String TAG = "MDSignUpActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (phoneNumberString.equals("")) {
             Toast.makeText(getApplicationContext(), "Please enter a phone number", Toast.LENGTH_LONG).show();
         } else if (!usernameString.matches("^[a-zA-Z0-9]*$") || usernameString.equals("")) {
-            Toast.makeText(getApplicationContext(), "Please enter a phone number", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Please enter an alphanumeric username", Toast.LENGTH_LONG).show();
         } else {
             signUpUser.signUpUser(usernameString, firstNameString, lastNameString, emailString, passwordString, phoneNumberString);
         }
@@ -172,7 +172,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 });
                             } else {
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

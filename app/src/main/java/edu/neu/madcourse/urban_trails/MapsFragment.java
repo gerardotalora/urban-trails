@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -35,6 +36,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import edu.neu.madcourse.urban_trails.models.Stop;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -120,8 +123,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         this.displayTrailOnMap();
     }
 
-    public ArrayList<Stop> getTrail() {
-        return this.trail;
+    public void getTrail(final TrailActivity parent) {
+        final ParcelableArrayList<Stop> trail = this.trail;
+        this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
+            @Override
+            public void onSnapshotReady(Bitmap bitmap) {
+                parent.onEndTrailCallback(trail, bitmap);
+            }
+        });
     }
 
     private LatLng shiftLatLngByFeet(LatLng in, double latShiftFeet, double longShiftFeet) {
@@ -254,25 +263,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onProviderDisabled(String provider) {
 
-    }
-
-}
-
-class Stop {
-    private final String title;
-    private final LatLng latLng;
-
-    public Stop(String title, LatLng latLng) {
-        this.title = title;
-        this.latLng = latLng;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public LatLng getLatLng() {
-        return latLng;
     }
 }
 

@@ -3,12 +3,20 @@ package edu.neu.madcourse.urban_trails;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
+
+import java.io.FileOutputStream;
+
+import edu.neu.madcourse.urban_trails.models.Stop;
 
 public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
 
@@ -42,10 +50,34 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
                 Toast.makeText(this, "Navigation Camera", Toast.LENGTH_LONG).show();
                 break;
             case R.id.navigation_end_trail:
-                Toast.makeText(this, "Navigation End Trail: " + mapsFragment.getTrail().size() + " stops", Toast.LENGTH_LONG).show();
-
+//                Toast.makeText(this, "Navigation End Trail", Toast.LENGTH_LONG).show();
+                mapsFragment.getTrail(this); // Calls onEndTrailCallback
                 break;
         }
         return false;
+    }
+
+    public void onEndTrailCallback(ParcelableArrayList<Stop> trail, Bitmap snapshot) {
+        try {
+            //Write file
+            String filename = "bitmap.png";
+            FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
+            snapshot.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+            //Cleanup
+            stream.close();
+            snapshot.recycle();
+
+            //Pop intent
+            Intent intent = new Intent(this, TrailSummaryActivity.class);
+
+            Bundle b = new Bundle();
+            b.putParcelable("options", trail);
+            intent.putExtra("bundle", b);
+            intent.putExtra("image", filename);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

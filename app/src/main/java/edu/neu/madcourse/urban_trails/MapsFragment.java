@@ -31,8 +31,11 @@ import static android.content.Context.LOCATION_SERVICE;
 public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final String STATE_KEY_MAP_CAMERA = "STATE_KEY_MAP_CAMERA";
+
     GoogleMap map;
     private LocationManager locationManager;
+    CameraPosition previousCameraPosition;
 
     @Nullable
     @Override
@@ -65,9 +68,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
-        LatLng sydney = new LatLng(-34, 151);
-        this.map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        this.map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        if (this.previousCameraPosition == null) {
+            LatLng sydney = new LatLng(-34, 151);
+            this.map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            this.map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        }
         this.enableMyLocation();
     }
 
@@ -138,6 +143,31 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             }
         }
     }
+
+    /**
+     * This method must restore the fragment state (e.g. after switching between portrait and landscape mode)
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            this.previousCameraPosition = (CameraPosition) savedInstanceState.get(STATE_KEY_MAP_CAMERA);
+        }
+    }
+
+    /**
+     * This method must save the fragment state before switching between portrait and landscape mode
+     *
+     * @param outState
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(STATE_KEY_MAP_CAMERA, this.map.getCameraPosition());
+    }
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

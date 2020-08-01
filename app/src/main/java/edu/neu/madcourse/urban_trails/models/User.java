@@ -15,7 +15,7 @@ public class User implements Serializable {
     private String password;
     private String phoneNumber;
     private String token;
-    private List<User> friends;
+    private List<String> friends;
     private List<Trail> trails;
 
     public User() {
@@ -89,11 +89,11 @@ public class User implements Serializable {
         this.token = token;
     }
 
-    public List<User> getFriends() {
+    public List<String> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<User> friends) {
+    public void setFriends(List<String> friends) {
         this.friends = friends;
     }
 

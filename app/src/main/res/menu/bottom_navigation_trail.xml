@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_camera"
         android:title="Take Photo" />
     <item
-        android:id="@+id/navigation_cancel"
+        android:id="@+id/navigation_end_trail"
         android:icon="@drawable/ic_cancel"
         android:title="End Trail" />
 </menu>

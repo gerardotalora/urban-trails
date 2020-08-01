@@ -13,8 +13,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +51,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     CameraPosition previousCameraPosition;
     private LatLng myLocation;
 
-    private ParcelableArrayList<Stop> trail;
+    private ArrayList<Stop> trail;
 
     @Nullable
     @Override
@@ -72,7 +70,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             mapFragment.getMapAsync(this);
         }
         this.locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        this.trail = new ParcelableArrayList<>();
+        this.trail = new ArrayList<>();
     }
 
     /**
@@ -124,7 +122,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     }
 
     public void getTrail(final TrailActivity parent) {
-        final ParcelableArrayList<Stop> trail = this.trail;
+        final ArrayList<Stop> trail = this.trail;
         this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
             @Override
             public void onSnapshotReady(Bitmap bitmap) {
@@ -233,7 +231,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             this.previousCameraPosition = (CameraPosition) savedInstanceState.get(STATE_KEY_MAP_CAMERA);
-            this.trail = (ParcelableArrayList<Stop>) savedInstanceState.get(STATE_KEY_TRAIL);
+            this.trail = (ArrayList<Stop>) savedInstanceState.get(STATE_KEY_TRAIL);
         }
     }
 
@@ -246,7 +244,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(STATE_KEY_MAP_CAMERA, this.map.getCameraPosition());
-        outState.putParcelable(STATE_KEY_TRAIL, this.trail);
+        outState.putSerializable(STATE_KEY_TRAIL, this.trail);
     }
 
 
@@ -263,161 +261,5 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onProviderDisabled(String provider) {
 
-    }
-}
-
-class ParcelableArrayList<T> extends ArrayList<T> implements Parcelable, List<T> {
-
-    private ArrayList<T> arrayList;
-
-    protected ParcelableArrayList(Parcel in) {
-        this.arrayList = in.readArrayList(null);
-    }
-
-    public static final Creator<ParcelableArrayList> CREATOR = new Creator<ParcelableArrayList>() {
-        @Override
-        public ParcelableArrayList createFromParcel(Parcel in) {
-            return new ParcelableArrayList(in);
-        }
-
-        @Override
-        public ParcelableArrayList[] newArray(int size) {
-            return new ParcelableArrayList[size];
-        }
-    };
-
-    public ParcelableArrayList() {
-        this.arrayList = new ArrayList<>();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.arrayList);
-    }
-
-    @Override
-    public int size() {
-        return this.arrayList.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.arrayList.isEmpty();
-    }
-
-    @Override
-    public boolean contains(@Nullable Object o) {
-        return this.arrayList.contains(o);
-    }
-
-    @NonNull
-    @Override
-    public Iterator<T> iterator() {
-        return this.arrayList.iterator();
-    }
-
-    @NonNull
-    @Override
-    public Object[] toArray() {
-        return this.arrayList.toArray();
-    }
-
-    @NonNull
-    @Override
-    public <T1> T1[] toArray(@NonNull T1[] a) {
-        return this.arrayList.toArray(a);
-    }
-
-    @Override
-    public boolean add(T t) {
-        return this.arrayList.add(t);
-    }
-
-    @Override
-    public boolean remove(@Nullable Object o) {
-        return this.arrayList.remove(o);
-    }
-
-    @Override
-    public boolean containsAll(@NonNull Collection<?> c) {
-        return this.arrayList.containsAll(c);
-    }
-
-    @Override
-    public boolean addAll(@NonNull Collection<? extends T> c) {
-        return this.arrayList.addAll(c);
-    }
-
-    @Override
-    public boolean addAll(int index, @NonNull Collection<? extends T> c) {
-        return this.arrayList.addAll(index, c);
-    }
-
-    @Override
-    public boolean removeAll(@NonNull Collection<?> c) {
-        return this.arrayList.removeAll(c);
-    }
-
-    @Override
-    public boolean retainAll(@NonNull Collection<?> c) {
-        return this.arrayList.retainAll(c);
-    }
-
-    @Override
-    public void clear() {
-        this.arrayList.clear();
-    }
-
-    @Override
-    public T get(int index) {
-        return this.arrayList.get(index);
-    }
-
-    @Override
-    public T set(int index, T element) {
-        return this.arrayList.set(index, element);
-    }
-
-    @Override
-    public void add(int index, T element) {
-        this.arrayList.add(index, element);
-    }
-
-    @Override
-    public T remove(int index) {
-        return this.arrayList.remove(index);
-    }
-
-    @Override
-    public int indexOf(@Nullable Object o) {
-        return this.arrayList.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(@Nullable Object o) {
-        return this.arrayList.lastIndexOf(o);
-    }
-
-    @NonNull
-    @Override
-    public ListIterator<T> listIterator() {
-        return this.arrayList.listIterator();
-    }
-
-    @NonNull
-    @Override
-    public ListIterator<T> listIterator(int index) {
-        return this.arrayList.listIterator(index);
-    }
-
-    @NonNull
-    @Override
-    public List<T> subList(int fromIndex, int toIndex) {
-        return this.arrayList.subList(fromIndex, toIndex);
     }
 }

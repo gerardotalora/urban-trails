@@ -15,4 +15,5 @@
     <string name="description">description</string>
     <string name="item_description">item_description</string>
     <string name="item_name">item_name</string>
+    <string name="add">Add</string>
 </resources>

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="200dp"
     android:layout_margin="2dp"
     app:cardCornerRadius="5dp">
@@ -11,11 +10,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
+        android:background="@color/white"
         >
 
         <ImageView
-            android:id="@+id/item_icon"
+            android:id="@+id/user_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_alignParentTop="true"
@@ -26,11 +26,12 @@
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/description"
             android:padding="3dp"
-            tools:srcCompat="@drawable/ic_profile" />
+            tools:srcCompat="@tools:sample/avatars[1]" />
 
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/user_name"
             android:layout_width="194dp"
+            android:textColor="@android:color/black"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -38,24 +39,28 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="5dp"
-            android:layout_toEndOf="@+id/item_icon"
+            android:layout_toEndOf="@+id/user_image"
             android:text="@string/item_name"
-            android:textSize="15sp"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/item_desc"
-            android:layout_width="192dp"
-            android:layout_height="147dp"
-            android:layout_below="@+id/item_name"
+        <Button
+            android:id="@+id/add_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="93dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/user_name"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_toEndOf="@+id/item_icon"
-            android:text="@string/item_description" />
+            android:layout_gravity="center"
+            android:layout_marginStart="119dp"
+            android:layout_marginTop="54dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_toEndOf="@+id/user_image"
+            android:background="@color/colorAccent"
+            android:onClick="onClick"
+            android:text="@string/add" />
 
     </RelativeLayout>
 

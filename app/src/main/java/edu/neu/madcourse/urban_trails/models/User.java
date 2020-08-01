@@ -104,4 +104,5 @@ public class User implements Serializable {
     public void setTrails(List<Trail> trails) {
         this.trails = trails;
     }
+
 }

@@ -1,12 +1,12 @@
 package edu.neu.madcourse.urban_trails.models;
 
-import com.google.firebase.database.IgnoreExtraProperties;
+//import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@IgnoreExtraProperties
-public class User {
+public class User implements Serializable {
 
     private String username;
     private String firstName;

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -15,9 +14,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
 
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 
-import edu.neu.madcourse.urban_trails.models.Stop;
+import edu.neu.madcourse.urban_trails.models.Trail;
 
 public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
 
@@ -58,7 +56,7 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
         return false;
     }
 
-    public void onEndTrailCallback(ArrayList<Stop> trail, Bitmap snapshot) {
+    public void onEndTrailCallback(Trail trail, Bitmap snapshot) {
         try {
             //Write file
             String filename = "bitmap.png";
@@ -73,7 +71,7 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
             Intent intent = new Intent(this, TrailSummaryActivity.class);
 
             Bundle b = new Bundle();
-            b.putSerializable("options", trail);
+            b.putSerializable("trail", trail);
             intent.putExtra("bundle", b);
             intent.putExtra("image", filename);
             startActivity(intent);

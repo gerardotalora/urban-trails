@@ -29,13 +29,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import edu.neu.madcourse.urban_trails.models.Stop;
+import edu.neu.madcourse.urban_trails.models.Trail;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -51,7 +47,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     CameraPosition previousCameraPosition;
     private LatLng myLocation;
 
-    private ArrayList<Stop> trail;
+    private Trail trail;
 
     @Nullable
     @Override
@@ -70,7 +66,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             mapFragment.getMapAsync(this);
         }
         this.locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        this.trail = new ArrayList<>();
+        this.trail = new Trail();
     }
 
     /**
@@ -99,22 +95,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
             // FOR TESTING
             if (STATIONARY_TESTING) {
-                if (this.trail.size() > 0) {
-                    latLng = shiftLatLngByFeet(this.trail.get(this.trail.size() - 1).getLatLng(), 100, 9);
+                if (this.trail.getStops().size() > 0) {
+                    latLng = shiftLatLngByFeet(this.trail.getStops().get(this.trail.getStops().size() - 1).getLatLng(), 100, 9);
                 } else {
                     latLng = shiftLatLngByFeet(myLocation, 101, 0);
                 }
             } else {
-                if (this.trail.size() > 0 && myLocation == this.trail.get(this.trail.size() - 1).getLatLng()) {
+                if (this.trail.getStops().size() > 0 && myLocation == this.trail.getStops().get(this.trail.getStops().size() - 1).getLatLng()) {
                     Toast.makeText(getActivity(), "You already added this stop! Try walking a little farther.", Toast.LENGTH_LONG).show();
                 }
                 latLng = myLocation;
             }
 
 
-
-            Stop stop = new Stop("Stop " + this.trail.size(), latLng);
-            this.trail.add(stop);
+            Stop stop = new Stop("Stop " + this.trail.getStops().size(), latLng);
+            this.trail.getStops().add(stop);
         } else {
             Toast.makeText(getActivity(), "myLocation is null", Toast.LENGTH_LONG).show();
         }
@@ -122,7 +117,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     }
 
     public void getTrail(final TrailActivity parent) {
-        final ArrayList<Stop> trail = this.trail;
+        final Trail trail = this.trail;
         this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
             @Override
             public void onSnapshotReady(Bitmap bitmap) {
@@ -161,9 +156,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         Toast.makeText(getActivity(), "Location updated at " + dtf.format(LocalDateTime.now()), Toast.LENGTH_SHORT).show();
         this.myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        if (this.trail.size() == 0) {
+        if (this.trail.getStops().size() == 0) {
             Stop stop = new Stop("Starting Location", this.myLocation);
-            this.trail.add(stop);
+            this.trail.getStops().add(stop);
             this.displayTrailOnMap();
         }
         zoomToLocation(location.getLatitude(), location.getLongitude());
@@ -171,7 +166,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
     private void displayTrailOnMap() {
         this.map.clear();
-        for (Stop stop : this.trail) {
+        for (Stop stop : this.trail.getStops()) {
             this.map.addMarker(new MarkerOptions().position(stop.getLatLng()).title(stop.getTitle()));
         }
     }
@@ -231,7 +226,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             this.previousCameraPosition = (CameraPosition) savedInstanceState.get(STATE_KEY_MAP_CAMERA);
-            this.trail = (ArrayList<Stop>) savedInstanceState.get(STATE_KEY_TRAIL);
+            this.trail = (Trail) savedInstanceState.get(STATE_KEY_TRAIL);
         }
     }
 
@@ -243,7 +238,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(STATE_KEY_MAP_CAMERA, this.map.getCameraPosition());
+        if (this.map != null) {
+            outState.putParcelable(STATE_KEY_MAP_CAMERA, this.map.getCameraPosition());
+        }
         outState.putSerializable(STATE_KEY_TRAIL, this.trail);
     }
 

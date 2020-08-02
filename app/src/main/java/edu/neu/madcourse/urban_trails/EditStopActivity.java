@@ -5,6 +5,10 @@ import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -77,8 +81,30 @@ public class EditStopActivity extends AppCompatActivity {
 //            Bundle extras = data.getExtras();
 //            Bitmap imageBitmap = (Bitmap) extras.get("data");
             ImageView imageView = findViewById(R.id.imageView3);
-            imageView.setImageURI(currentPhotoPath);
-//            imageView.setImageBitmap(imageBitmap);
+
+            final int THUMBSIZE = 1000;
+
+            Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(currentPhotoPath.getPath()),
+                    THUMBSIZE, THUMBSIZE);
+
+            ExifInterface exif = null;
+            try {
+                exif = new ExifInterface(currentPhotoPath.getPath());
+                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+                Matrix matrix = new Matrix();
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                    matrix.postRotate(90);
+                } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                    matrix.postRotate(180);
+                }
+                thumbnail = Bitmap.createBitmap(thumbnail, 0, 0, thumbnail.getWidth(), thumbnail.getHeight(), matrix, true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+//            imageView.setImageURI(currentPhotoPath);
+            imageView.setImageBitmap(thumbnail);
         }
     }
 

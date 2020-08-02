@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_urban_trails_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".TrailDetailActivity"></activity>
+        <activity android:name=".EditStopActivity"></activity>
+        <activity android:name=".TrailDetailActivity" />
         <activity android:name=".TrailSummaryActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Criteria;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.time.LocalDateTime;
@@ -35,7 +37,7 @@ import edu.neu.madcourse.urban_trails.models.Trail;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnInfoWindowClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String STATE_KEY_MAP_CAMERA = "STATE_KEY_MAP_CAMERA";
@@ -81,6 +83,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
+        this.map.setOnInfoWindowClickListener(this);
         this.enableMyLocation();
         this.displayTrailOnMap();
     }
@@ -154,7 +157,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onLocationChanged(Location location) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        Toast.makeText(getActivity(), "Location updated at " + dtf.format(LocalDateTime.now()), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "Location updated at " + dtf.format(LocalDateTime.now()), Toast.LENGTH_SHORT).show();
         this.myLocation = new LatLng(location.getLatitude(), location.getLongitude());
         if (this.trail.getStops().size() == 0) {
             Stop stop = new Stop("Starting Location", this.myLocation);
@@ -259,5 +262,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+//        Toast.makeText(getActivity(), "Context", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), EditStopActivity.class);
+        startActivity(intent);
     }
 }

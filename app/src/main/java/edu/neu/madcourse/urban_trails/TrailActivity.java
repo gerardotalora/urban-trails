@@ -45,9 +45,9 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
 //                Toast.makeText(this, "Navigation Add Stop", Toast.LENGTH_LONG).show();
                 mapsFragment.addStop();
                 break;
-            case R.id.navigation_camera:
-                Toast.makeText(this, "Navigation Camera", Toast.LENGTH_LONG).show();
-                break;
+//            case R.id.navigation_camera:
+//                Toast.makeText(this, "Navigation Camera", Toast.LENGTH_LONG).show();
+//                break;
             case R.id.navigation_end_trail:
 //                Toast.makeText(this, "Navigation End Trail", Toast.LENGTH_LONG).show();
                 mapsFragment.getTrail(this); // Calls onEndTrailCallback

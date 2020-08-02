@@ -104,7 +104,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                     latLng = shiftLatLngByFeet(myLocation, 101, 0);
                 }
             } else {
-                if (this.trail.getStops().size() > 0 && myLocation == this.trail.getStops().get(this.trail.getStops().size() - 1).getLatLng()) {
+                if (this.trail.getStops().size() > 0 && myLocation.equals(this.trail.getStops().get(this.trail.getStops().size() - 1).getLatLng())) {
                     Toast.makeText(getActivity(), "You already added this stop! Try walking a little farther.", Toast.LENGTH_LONG).show();
                 }
                 latLng = myLocation;

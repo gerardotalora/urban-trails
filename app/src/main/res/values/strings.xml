@@ -24,4 +24,5 @@
     <string name="save_trail">Save Trail</string>
     <string name="save_stop">Save Stop</string>
     <string name="edit_stop_name">Stop Name</string>
+    <string name="take_picture">Take Picture</string>
 </resources>

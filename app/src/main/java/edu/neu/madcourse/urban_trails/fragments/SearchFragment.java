@@ -195,6 +195,7 @@ public class SearchFragment extends Fragment {
                         Log.v(TAG, friend);
                     } else {
                         friends.add(friend);
+                        showToast("Added New Friend: " + friend);
                     }
 
                     user.setFriends(friends);

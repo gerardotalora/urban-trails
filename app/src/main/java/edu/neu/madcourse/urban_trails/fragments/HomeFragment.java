@@ -24,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.neu.madcourse.urban_trails.R;
@@ -83,8 +85,8 @@ public class HomeFragment extends Fragment {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             final String name = currentUser.getDisplayName();
-            GetTrails getTrails = new GetTrails();
-            getTrails.getTrails(name);
+            GetFriends getFriends = new GetFriends();
+            getFriends.getFriends(name);
         }
     }
 
@@ -120,7 +122,8 @@ public class HomeFragment extends Fragment {
                     if (userTrails == null) {
                         userTrails = new ArrayList<>();
                     }
-                    trails.addAll(userTrails);
+                    List<Trail> sortedUserTrails = sortTrailsByTimestamp(userTrails);
+                    trails.addAll(sortedUserTrails);
                     rAdapter.notifyDataSetChanged();
 
                 }
@@ -144,5 +147,68 @@ public class HomeFragment extends Fragment {
         public void runInNewThread() {
             new Thread(this).start();
         }
+
+        private List<Trail> sortTrailsByTimestamp(List<Trail> userTrails) {
+            Collections.sort(userTrails, new Comparator<Trail>() {
+
+                @Override
+                public int compare(Trail o1, Trail o2) {
+                    return o2.getTimestamp().compareTo(o1.getTimestamp());
+                }
+            });
+
+            return userTrails;
+        }
     }
+
+    private class GetFriends implements Runnable {
+
+        private String username;
+
+        GetFriends() {
+        }
+
+        public void getFriends(String username) {
+            this.username = username;
+            this.runInNewThread();
+        }
+
+        @Override
+        public void run() {
+            databaseReference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    List<String> friends = user.getFriends();
+                    if (friends == null) {
+                        friends = new ArrayList<>();
+                    } else {
+                        for (String friend : friends) {
+                            GetTrails getTrails = new GetTrails();
+                            getTrails.getTrails(friend);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    showToast("Error connecting to database");
+                }
+            });
+        }
+
+        private void showToast(final String toastText) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(homeView.getContext(), toastText, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        public void runInNewThread() {
+            new Thread(this).start();
+        }
+    }
+
 }

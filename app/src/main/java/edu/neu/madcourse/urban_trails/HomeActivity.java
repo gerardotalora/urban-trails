@@ -26,6 +26,7 @@ public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
     private FirebaseAuth firebaseAuth;
+    private HomeActivity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        openFragment(HomeFragment.newInstance("", ""));
+        openFragment(HomeFragment.newInstance());
 
     }
 
@@ -55,10 +56,10 @@ public class HomeActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_home:
-                            openFragment(HomeFragment.newInstance("", ""));
+                            openFragment(HomeFragment.newInstance());
                             return true;
                         case R.id.navigation_search:
-                            openFragment(SearchFragment.newInstance("", ""));
+                            openFragment(SearchFragment.newInstance());
                             return true;
                         case R.id.navigation_start_trail:
                             openFragment(StartTrailFragment.newInstance("", ""));

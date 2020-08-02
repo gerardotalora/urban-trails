@@ -266,8 +266,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-//        Toast.makeText(getActivity(), "Context", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getActivity(), EditStopActivity.class);
-        startActivityForResult(intent, 0);
+        TrailActivity parent = (TrailActivity) getActivity();
+        if (parent != null) {
+            String stopTitle = marker.getTitle();
+            for (Stop stop : this.trail.getStops()) {
+                if (stop.getTitle().equals(stopTitle)) {
+                    parent.stopClicked(stop);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void updateStopInfo(Stop stop) {
+        for (int i = 0; i < this.trail.getStops().size(); i++) {
+            Stop oldStop = this.trail.getStops().get(i);
+            if (oldStop.getLatitude() == stop.getLatitude() && oldStop.getLongitude() == stop.getLongitude()) {
+                this.trail.getStops().set(i, stop);
+            }
+        }
+        this.displayTrailOnMap();
     }
 }

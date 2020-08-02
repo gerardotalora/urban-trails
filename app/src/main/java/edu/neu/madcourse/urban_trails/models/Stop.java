@@ -15,6 +15,8 @@ public class Stop implements Serializable {
 
     private String description;
 
+    private String imageFileName;
+
     public Stop() {
     }
 
@@ -58,5 +60,13 @@ public class Stop implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
     }
 }

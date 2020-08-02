@@ -29,7 +29,6 @@ public class EditStopActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Stop stop;
     private EditText stopNameView;
-    Uri currentPhotoPath;
 
 
     @Override
@@ -37,7 +36,14 @@ public class EditStopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_stop);
 
-        this.stop = (Stop) getIntent().getBundleExtra("bundle").getSerializable("stop");
+        if (savedInstanceState == null) {
+            this.stop = (Stop) getIntent().getBundleExtra("bundle").getSerializable("stop");
+        } else {
+            this.stop = (Stop) savedInstanceState.getSerializable("stop");
+        }
+        if (this.stop.getImageFileName() != null) {
+            this.displayImageForStop();
+        }
 
         this.stopNameView = findViewById(R.id.stop_name);
         stopNameView.setText(stop.getTitle());
@@ -80,32 +86,36 @@ public class EditStopActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 //            Bundle extras = data.getExtras();
 //            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageView imageView = findViewById(R.id.imageView3);
 
-            final int THUMBSIZE = 1000;
 
-            Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(currentPhotoPath.getPath()),
-                    THUMBSIZE, THUMBSIZE);
-
-            ExifInterface exif = null;
-            try {
-                exif = new ExifInterface(currentPhotoPath.getPath());
-                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                Matrix matrix = new Matrix();
-                if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
-                    matrix.postRotate(90);
-                } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
-                    matrix.postRotate(180);
-                }
-                thumbnail = Bitmap.createBitmap(thumbnail, 0, 0, thumbnail.getWidth(), thumbnail.getHeight(), matrix, true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            this.displayImageForStop();
 
 //            imageView.setImageURI(currentPhotoPath);
-            imageView.setImageBitmap(thumbnail);
+
         }
+    }
+
+    private void displayImageForStop() {
+        ImageView imageView = findViewById(R.id.imageView3);
+        final int THUMBSIZE = 1000;
+        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(this.stop.getImageFileName()),
+                THUMBSIZE, THUMBSIZE);
+
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(this.stop.getImageFileName());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Matrix matrix = new Matrix();
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                matrix.postRotate(90);
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                matrix.postRotate(180);
+            }
+            thumbnail = Bitmap.createBitmap(thumbnail, 0, 0, thumbnail.getWidth(), thumbnail.getHeight(), matrix, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        imageView.setImageBitmap(thumbnail);
     }
 
     private File createImageFile() throws IOException {
@@ -120,8 +130,14 @@ public class EditStopActivity extends AppCompatActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = Uri.fromFile(image);
+        this.stop.setImageFileName(Uri.fromFile(image).getPath());
         return image;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("stop", this.stop);
     }
 
 }

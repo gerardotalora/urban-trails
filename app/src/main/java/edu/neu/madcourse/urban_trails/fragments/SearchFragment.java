@@ -190,7 +190,10 @@ public class SearchFragment extends Fragment {
                         friends = new ArrayList<>();
                     }
 
-                    if (!(friends.contains(friend))) {
+                    if (friends.contains(friend) || username.equals(friend)) {
+                        Log.v(TAG, friends.toString());
+                        Log.v(TAG, friend);
+                    } else {
                         friends.add(friend);
                     }
 

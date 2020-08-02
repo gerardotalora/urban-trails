@@ -73,8 +73,8 @@ public class TrailSummaryActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.saveTrailButton:
-                EditText nameview = findViewById(R.id.trail_summary_name);
+            case R.id.saveStopButton:
+                EditText nameview = findViewById(R.id.stop_name);
                 EditText descriptionview = findViewById(R.id.trail_summary_description);
 
                 String name = nameview.getText().toString();

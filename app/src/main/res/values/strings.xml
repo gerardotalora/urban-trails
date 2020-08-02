@@ -21,4 +21,6 @@
     <string name="todo">TODO</string>
     <string name="trail_name">Trail Name</string>
     <string name="trail_description">Trail Description</string>
+    <string name="save_stop">Save Stop</string>
+    <string name="edit_stop_name">Stop Name</string>
 </resources>

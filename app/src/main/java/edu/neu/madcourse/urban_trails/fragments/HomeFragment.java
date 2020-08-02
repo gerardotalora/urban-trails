@@ -1,5 +1,6 @@
 package edu.neu.madcourse.urban_trails.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ import java.util.List;
 
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
+import edu.neu.madcourse.urban_trails.TrailActivity;
+import edu.neu.madcourse.urban_trails.TrailDetailActivity;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
@@ -74,6 +77,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 Toast.makeText(homeView.getContext(), trails.get(position).getName(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), TrailDetailActivity.class);
+                Bundle b = new Bundle();
+
+                //TODO For some reason sending a base64 image string via a bundle causes an error.  Need to investigate reason.  Changing image.
+                trails.get(position).setTrailImageBase64("image");
+                b.putSerializable("trail", trails.get(position));
+                intent.putExtra("bundle", b);
+                startActivity(intent);
 //                rAdapter.notifyDataSetChanged();
             }
         });

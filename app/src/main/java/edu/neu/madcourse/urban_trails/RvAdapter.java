@@ -67,7 +67,7 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RviewHolder holder, int position) {
         Trail currentItem = trails.get(position);
-        holder.trailImage.setImageResource(R.drawable.ic_urban_trails_logo_foreground);
+        holder.trailImage.setImageResource(R.drawable.ic_camera);
 //        holder.trailImage.setImageBitmap(currentItem.convertBase64ImageToBitmap());
 //        holder.trailImage.setImageResource(currentItem.getTrailImageBase64());
         holder.trailName.setText(currentItem.getName());

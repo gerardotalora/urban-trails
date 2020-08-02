@@ -138,6 +138,7 @@ public class SearchFragment extends Fragment {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View userView = inflater.inflate(R.layout.user_card, parent, false);
             TextView textView = (TextView) userView.findViewById(R.id.user_name);
+            TextView textViewDesc = (TextView) userView.findViewById(R.id.user_description);
             ImageView imageView = (ImageView) userView.findViewById(R.id.user_image);
 
             final int friendPostion = position;
@@ -158,7 +159,9 @@ public class SearchFragment extends Fragment {
 
             imageView.setImageResource(R.drawable.ic_urban_trails_logo_foreground);
             String text = users.get(position).getUsername();
+            String userDesc = users.get(position).getFirstName() + "\n" + users.get(position).getLastName();
             textView.setText(text);
+            textViewDesc.setText(userDesc);
             Log.i(TAG, users.get(position).getUsername());
             return userView;
 

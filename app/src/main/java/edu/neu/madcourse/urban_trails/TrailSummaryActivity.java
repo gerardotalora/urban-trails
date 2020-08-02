@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,8 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,14 @@ public class TrailSummaryActivity extends AppCompatActivity {
             tv1= findViewById(R.id.imageView3);
             tv1.setImageBitmap(bmp);
 
+            // Create base64 image
+            Bitmap bitmapBase64 = bmp.copy(bmp.getConfig(), true);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmapBase64.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            bitmapBase64.recycle();
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            String imageB64 = Base64.encodeToString(byteArray, Base64.URL_SAFE);
+            this.trail.setTrailImageBase64(imageB64);
 
         } catch (Exception e) {
             e.printStackTrace();

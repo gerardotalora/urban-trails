@@ -2,6 +2,10 @@ package edu.neu.madcourse.urban_trails.models;
 
 //import com.google.firebase.database.IgnoreExtraProperties;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
@@ -30,7 +34,6 @@ public class Trail implements Serializable {
         this.description = "description";
         this.stops = new ArrayList<>();
         this.timestamp = null; //ServerValue.TIMESTAMP;
-        this.trailImageBase64 = "trailImageBase64";
     }
 
     public Trail(String name, String description, List<Stop> stops, Long timestamp, String trailImageBase64) {
@@ -83,5 +86,12 @@ public class Trail implements Serializable {
 
     public void setTrailImageBase64(String trailImageBase64) {
         this.trailImageBase64 = trailImageBase64;
+    }
+
+    //TODO Fix conversion
+    public Bitmap convertBase64ImageToBitmap() {
+        byte[] decodedString = Base64.decode(this.trailImageBase64, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return bitmap;
     }
 }

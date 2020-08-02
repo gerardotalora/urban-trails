@@ -268,6 +268,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onInfoWindowClick(Marker marker) {
 //        Toast.makeText(getActivity(), "Context", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), EditStopActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 }

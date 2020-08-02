@@ -175,9 +175,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     private void subscribeToLocation() {
         Log.v("DEBUG", "subscribeToLocation");
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-        String enabledProvider = locationManager.getBestProvider(criteria, false);
+//        String enabledProvider = locationManager.getBestProvider(criteria, true);
+        String enabledProvider = locationManager.NETWORK_PROVIDER;
 
         if (enabledProvider == null) {
             Log.v("DEBUG", "Best provider is null");

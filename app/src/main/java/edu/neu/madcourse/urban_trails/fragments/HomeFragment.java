@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         rAdapter.setOnItemClickListener(new RvAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(homeView.getContext(), trails.get(position).getName(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(homeView.getContext(), trails.get(position).getName(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), TrailDetailActivity.class);
                 Bundle b = new Bundle();
 

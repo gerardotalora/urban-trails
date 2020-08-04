@@ -123,7 +123,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         this.displayTrailOnMap();
     }
 
-    public void getTrail(final TrailActivity parent) {
+    public void getTrail(final MapsFragmentContainerActivity parent) {
         final Trail trail = this.trail;
         this.centerMapOnTrail();
         this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
@@ -296,7 +296,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        TrailActivity parent = (TrailActivity) getActivity();
+        MapsFragmentContainerActivity parent = (MapsFragmentContainerActivity) getActivity();
         if (parent != null) {
             String stopTitle = marker.getTitle();
             for (Stop stop : this.trail.getStops()) {

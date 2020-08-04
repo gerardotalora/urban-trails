@@ -18,7 +18,7 @@ import java.io.FileOutputStream;
 import edu.neu.madcourse.urban_trails.models.Stop;
 import edu.neu.madcourse.urban_trails.models.Trail;
 
-public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
+public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener, MapsFragmentContainerActivity {
 
     private MapsFragment mapsFragment;
 

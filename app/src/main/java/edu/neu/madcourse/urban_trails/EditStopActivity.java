@@ -51,14 +51,12 @@ public class EditStopActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
             finish();
         } else if (view.getId() == R.id.takePictureButton) {
-            // Open camera!
-
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 File photoFile = null;
                 try {
                     photoFile = Utils.createImageFile(this);
-                    this.stop.setImageFileName(Uri.fromFile(photoFile).getPath());
+                    this.stop.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
                 } catch (IOException ex) {
                 }
                 if (photoFile != null) {
@@ -83,7 +81,7 @@ public class EditStopActivity extends AppCompatActivity {
 
     private void displayImageForStop() {
         ImageView imageView = findViewById(R.id.imageView3);
-        Utils.displayThumbnail(imageView, this.stop.getImageFileName());
+        Utils.displayThumbnail(this, imageView, this.stop.getImageFileName());
     }
 
     @Override

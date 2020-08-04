@@ -49,7 +49,7 @@ public class TrailSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trail_summary);
         this.trail = (Trail) getIntent().getBundleExtra("bundle").getSerializable("trail");
         Log.v("TESTMD", this.trail.getTrailImageFilename());
-        Utils.displayThumbnail((ImageView) findViewById(R.id.imageView3), this.trail.getTrailImageFilename());
+        Utils.displayThumbnail(this, (ImageView) findViewById(R.id.imageView3), this.trail.getTrailImageFilename());
     }
 
     public void onClick(View view) {
@@ -89,7 +89,13 @@ class SaveTrailInFirebase implements Runnable {
             StorageReference storageRef = storage.getReference();
             StorageReference imagesRef = storageRef.child("images").child(username);
             for (Stop stop : trail.getStops()) {
-                Uri uri = Uri.fromFile(new File(stop.getImageFileName()));
+                if (stop.getImageFileName() != null) {
+                    Uri uri = Uri.fromFile(Utils.getImageFile(context, stop.getImageFileName()));
+                    imagesRef.child(uri.getLastPathSegment()).putFile(uri);
+                }
+            }
+            if (trail.getTrailImageFilename() != null) {
+                Uri uri = Uri.fromFile(Utils.getImageFile(context, trail.getTrailImageFilename()));
                 imagesRef.child(uri.getLastPathSegment()).putFile(uri);
             }
 
@@ -118,7 +124,12 @@ class SaveTrailInFirebase implements Runnable {
                                 Log.v("TESTMDBT error: ", error.toString());
                             }
                             Log.v("TESTMDBT ref: ", ref.toString());
-                            myUserReference.child("trails").child(Integer.toString(finalTrails.size() - 1)).child("timestamp").setValue(ServerValue.TIMESTAMP);
+                            myUserReference.child("trails").child(Integer.toString(finalTrails.size() - 1)).child("timestamp").setValue(ServerValue.TIMESTAMP, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                    Toast.makeText(context, "Saved trail successfully!", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     });
 //                    String key = databaseReference.child("users").child(name).child("trails").push().getKey();

@@ -12,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,7 +136,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    trail.setTrailImageFilename(imageFile.getPath());
+                    trail.setTrailImageFilename(Uri.fromFile(imageFile).getLastPathSegment());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

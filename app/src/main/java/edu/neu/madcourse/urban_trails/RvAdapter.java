@@ -1,6 +1,8 @@
 package edu.neu.madcourse.urban_trails;
 
 
+import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.util.ArrayList;
 
+import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
 import edu.neu.madcourse.urban_trails.models.Trail;
 
 public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
+    private final Context context;
     private ArrayList<Trail> trails;
     private ItemClickListener listener;
 
@@ -52,7 +60,8 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
         }
     }
 
-    public RvAdapter(ArrayList<Trail> trails) {
+    public RvAdapter(Context context, ArrayList<Trail> trails) {
+        this.context = context;
         this.trails = trails;
     }
 
@@ -65,11 +74,12 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
 
     //TODO Get trail image and data
     @Override
-    public void onBindViewHolder(@NonNull RviewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RviewHolder holder, int position) {
         Trail currentItem = trails.get(position);
         holder.trailImage.setImageResource(R.drawable.ic_camera);
-//        holder.trailImage.setImageBitmap(currentItem.convertBase64ImageToBitmap());
-//        holder.trailImage.setImageResource(currentItem.getTrailImageBase64());
+        if (currentItem.getTrailImageFilename() != null) {
+            Utils.displayThumbnail(context, holder.trailImage, currentItem.getTrailImageFilename());
+        }
         holder.trailName.setText(currentItem.getName());
         holder.trailDescription.setText(currentItem.getDescription());
     }

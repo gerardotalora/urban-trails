@@ -6,12 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
-import com.google.firebase.database.ServerValue;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Trail implements Serializable {
 
@@ -27,7 +24,7 @@ public class Trail implements Serializable {
      * */
     Long timestamp = null; //ServerValue.TIMESTAMP;
 
-    private String trailImageBase64;
+    private String trailImageFilename;
 
     public Trail() {
         this.name = "name";
@@ -36,12 +33,12 @@ public class Trail implements Serializable {
         this.timestamp = null; //ServerValue.TIMESTAMP;
     }
 
-    public Trail(String name, String description, List<Stop> stops, Long timestamp, String trailImageBase64) {
+    public Trail(String name, String description, List<Stop> stops, Long timestamp, String trailImageFilename) {
         this.name = name;
         this.description = description;
         this.stops = stops;
         this.timestamp = timestamp;
-        this.trailImageBase64 = trailImageBase64;
+        this.trailImageFilename = trailImageFilename;
     }
 
     public Trail(String name) {
@@ -80,18 +77,11 @@ public class Trail implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public String getTrailImageBase64() {
-        return trailImageBase64;
+    public String getTrailImageFilename() {
+        return trailImageFilename;
     }
 
-    public void setTrailImageBase64(String trailImageBase64) {
-        this.trailImageBase64 = trailImageBase64;
-    }
-
-    //TODO Fix conversion
-    public Bitmap convertBase64ImageToBitmap() {
-        byte[] decodedString = Base64.decode(this.trailImageBase64, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return bitmap;
+    public void setTrailImageFilename(String trailImageFilename) {
+        this.trailImageFilename = trailImageFilename;
     }
 }

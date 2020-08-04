@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
         recyclerView = homeView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         rLayoutManger = new LinearLayoutManager(homeView.getContext());
-        rAdapter = new RvAdapter(trails);
+        rAdapter = new RvAdapter(getActivity(), trails);
 
         recyclerView.setAdapter(rAdapter);
         recyclerView.setLayoutManager(rLayoutManger);

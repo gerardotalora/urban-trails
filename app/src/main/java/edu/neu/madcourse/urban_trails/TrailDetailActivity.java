@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+
 import edu.neu.madcourse.urban_trails.models.Trail;
 
 public class TrailDetailActivity extends AppCompatActivity {
@@ -32,8 +34,13 @@ public class TrailDetailActivity extends AppCompatActivity {
 
         trailName.setText(trail.getName());
         trailDescritpion.setText(trail.getDescription());
-//        trailCreatedTime.setText(Long.toString(trail.getTimestamp()));
-//        trailStops.setText(Integer.toString(trail.getStops().size()));
+
+        trailCreatedTime.setText(DateFormat.getDateInstance().format(new java.util.Date(trail.getTimestamp())));
+        trailStops.setText(Integer.toString(trail.getStops().size()) + " stop" + (trail.getStops().size() == 1 ? "" : "s"));
+
+        if (this.trail.getTrailImageFilename() != null) {
+            Utils.displayThumbnail(this, trailImage, this.trail.getTrailImageFilename());
+        }
 
     }
 }

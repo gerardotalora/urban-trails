@@ -5,11 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -27,9 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,13 +85,15 @@ class SaveTrailInFirebase implements Runnable {
             StorageReference imagesRef = storageRef.child("images").child(username);
             for (Stop stop : trail.getStops()) {
                 if (stop.getImageFileName() != null) {
-                    Uri uri = Uri.fromFile(Utils.getImageFile(context, stop.getImageFileName()));
+                    Uri uri = Uri.fromFile(Utils.getLocalImageFile(context, stop.getImageFileName()));
                     imagesRef.child(uri.getLastPathSegment()).putFile(uri);
+                    stop.setImageFileName(Paths.get(username, stop.getImageFileName()).toString());
                 }
             }
             if (trail.getTrailImageFilename() != null) {
-                Uri uri = Uri.fromFile(Utils.getImageFile(context, trail.getTrailImageFilename()));
+                Uri uri = Uri.fromFile(Utils.getLocalImageFile(context, trail.getTrailImageFilename()));
                 imagesRef.child(uri.getLastPathSegment()).putFile(uri);
+                trail.setTrailImageFilename(Paths.get(username, trail.getTrailImageFilename()).toString());
             }
 
             final DatabaseReference myUserReference = this.databaseReference.child("users").child(username);
@@ -132,8 +129,6 @@ class SaveTrailInFirebase implements Runnable {
                             });
                         }
                     });
-//                    String key = databaseReference.child("users").child(name).child("trails").push().getKey();
-//                    databaseReference.child("users").child(name).
                 }
 
                 @Override

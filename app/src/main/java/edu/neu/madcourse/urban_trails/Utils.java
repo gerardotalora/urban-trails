@@ -10,14 +10,23 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import edu.neu.madcourse.urban_trails.models.Stop;
 
 public class Utils {
     public static File createImageFile(Context context) throws IOException {
@@ -44,8 +53,15 @@ public class Utils {
      * @param filename should be relative to the storageDir
      */
     public static void displayThumbnail(Context context, ImageView imageView, String filename) {
-        Path path = Paths.get(Utils.getStorageDir(context).getAbsolutePath(), filename);
-        filename = path.toString();
+        if (Utils.getLocalImageFile(context, filename).isFile()) {
+            Utils.displayThumbnailFromLocal(context, imageView, filename);
+        } else {
+            Utils.displayThumbnailFromCloudStorage(context, imageView, filename);
+        }
+    }
+
+    private static void displayThumbnailFromLocal(Context context, ImageView imageView, String filename) {
+        filename = Utils.getLocalFilepath(context, filename).toString();
         final int THUMBSIZE = 1000;
         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(filename),
                 THUMBSIZE, THUMBSIZE);
@@ -67,12 +83,41 @@ public class Utils {
         imageView.setImageBitmap(thumbnail);
     }
 
+    private static Path getLocalFilepath(Context context, String filename) {
+        return Paths.get(Utils.getStorageDir(context).getAbsolutePath(), filename);
+    }
+
+    private static void displayThumbnailFromCloudStorage(final Context context, final ImageView imageView, String filename) {
+        Utils.getImageUrl(filename).addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context)
+                        .load(uri)
+                        .into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public static double feetToDegrees(double feet) {
         return feet / (70 * 5280);
     }
 
-    public static File getImageFile(Context context, String imageFileName) {
-        Path path = Paths.get(Utils.getStorageDir(context).getAbsolutePath(), imageFileName);
-        return path.toFile();
+    public static File getLocalImageFile(Context context, String imageFileName) {
+        return Utils.getLocalFilepath(context, imageFileName).toFile();
+    }
+
+    public static Task<Uri> getImageUrl(String trailImageFilename) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            StorageReference imageReference = FirebaseStorage.getInstance().getReference().child("images").child(trailImageFilename);
+            return imageReference.getDownloadUrl();
+        } else {
+            return null;
+        }
     }
 }

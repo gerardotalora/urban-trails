@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Criteria;
@@ -20,16 +19,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.time.LocalDateTime;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 import edu.neu.madcourse.urban_trails.models.Stop;
@@ -121,17 +124,43 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
     public void getTrail(final TrailActivity parent) {
         final Trail trail = this.trail;
+        this.centerMapOnTrail();
         this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
             @Override
             public void onSnapshotReady(Bitmap bitmap) {
-                parent.onEndTrailCallback(trail, bitmap);
+                try {
+                    File imageFile = Utils.createImageFile(getActivity());
+                    try (FileOutputStream out = new FileOutputStream(imageFile)) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    trail.setTrailImageFilename(imageFile.getPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                parent.onEndTrailCallback(trail);
             }
         });
     }
 
+    private void centerMapOnTrail() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Stop stop : this.trail.getStops()) {
+            builder.include(stop.getLatLng());
+        }
+        LatLngBounds bounds = builder.build();
+        LatLng newNortheast = new LatLng(bounds.northeast.latitude, bounds.northeast.longitude + Utils.feetToDegrees(1000));
+        LatLng newSouthwest = new LatLng(bounds.southwest.latitude, bounds.southwest.longitude - Utils.feetToDegrees(1000));
+        LatLngBounds adjustedBounds = new LatLngBounds(newSouthwest, newNortheast);
+        int padding = 200; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(adjustedBounds, padding);
+        this.map.moveCamera(cu);
+    }
+
     private LatLng shiftLatLngByFeet(LatLng in, double latShiftFeet, double longShiftFeet) {
-        double latShiftDegrees = latShiftFeet / (70 * 5280);
-        double longShiftDegrees = longShiftFeet / (70 * 5280);
+        double latShiftDegrees = Utils.feetToDegrees(latShiftFeet);
+        double longShiftDegrees = Utils.feetToDegrees(longShiftFeet);
         return new LatLng(in.latitude + latShiftDegrees, in.longitude + longShiftDegrees);
     }
 

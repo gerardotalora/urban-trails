@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +29,6 @@ import java.util.List;
 
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
-import edu.neu.madcourse.urban_trails.TrailActivity;
 import edu.neu.madcourse.urban_trails.TrailDetailActivity;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
@@ -81,7 +78,7 @@ public class HomeFragment extends Fragment {
                 Bundle b = new Bundle();
 
                 //TODO For some reason sending a base64 image string via a bundle causes an error.  Need to investigate reason.  Changing image.
-                trails.get(position).setTrailImageBase64("image");
+//                trails.get(position).setTrailImageFilename("image");
                 b.putSerializable("trail", trails.get(position));
                 intent.putExtra("bundle", b);
                 startActivity(intent);

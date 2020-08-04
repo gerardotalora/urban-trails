@@ -57,24 +57,12 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
         return false;
     }
 
-    public void onEndTrailCallback(Trail trail, Bitmap snapshot) {
+    public void onEndTrailCallback(Trail trail) {
         try {
-            //Write file
-            String filename = "bitmap.png";
-            FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
-            snapshot.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-            //Cleanup
-            stream.close();
-            snapshot.recycle();
-
-            //Pop intent
             Intent intent = new Intent(this, TrailSummaryActivity.class);
-
             Bundle b = new Bundle();
             b.putSerializable("trail", trail);
             intent.putExtra("bundle", b);
-            intent.putExtra("image", filename);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

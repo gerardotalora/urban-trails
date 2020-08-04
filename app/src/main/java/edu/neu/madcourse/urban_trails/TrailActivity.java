@@ -3,17 +3,14 @@ package edu.neu.madcourse.urban_trails;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
-
-import java.io.FileOutputStream;
 
 import edu.neu.madcourse.urban_trails.models.Stop;
 import edu.neu.madcourse.urban_trails.models.Trail;
@@ -80,10 +77,20 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 Stop stop = (Stop) data.getBundleExtra("bundle").getSerializable("stop");
                 this.mapsFragment.updateStopInfo(stop);
             }
         }
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
     }
 }

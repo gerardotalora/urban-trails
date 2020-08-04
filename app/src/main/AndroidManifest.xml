@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/ic_urban_trails_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".FollowTrailActivity"></activity>
+        <activity android:name=".ViewStopActivity"></activity>
+        <activity android:name=".FollowTrailActivity" />
         <activity android:name=".EditStopActivity" />
         <activity android:name=".TrailDetailActivity" />
         <activity android:name=".TrailSummaryActivity" />

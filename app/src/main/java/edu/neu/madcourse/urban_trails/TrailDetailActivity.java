@@ -49,6 +49,9 @@ public class TrailDetailActivity extends AppCompatActivity {
     public void onClick(View view) {
         if (view.getId() == R.id.followTrailButton) {
             Intent intent = new Intent(this, FollowTrailActivity.class);
+            Bundle b = new Bundle();
+            b.putSerializable("trail", this.trail);
+            intent.putExtra("bundle", b);
             startActivity(intent);
         }
     }

@@ -155,6 +155,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     }
 
     private void centerMapOnTrail() {
+        if (this.trail == null || this.trail.getStops().size() == 0) {
+            return;
+        }
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Stop stop : this.trail.getStops()) {
             builder.include(stop.getLatLng());

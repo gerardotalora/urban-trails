@@ -81,7 +81,7 @@ public class EditStopActivity extends AppCompatActivity {
 
     private void displayImageForStop() {
         ImageView imageView = findViewById(R.id.imageView3);
-        Utils.displayThumbnail(this, imageView, this.stop.getImageFileName());
+        Utils.displayThumbnail(getApplicationContext(), imageView, this.stop.getImageFileName(), null);
     }
 
     @Override

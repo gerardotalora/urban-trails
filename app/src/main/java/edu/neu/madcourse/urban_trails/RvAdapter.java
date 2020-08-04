@@ -78,7 +78,7 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
         Trail currentItem = trails.get(position);
         holder.trailImage.setImageResource(R.drawable.ic_camera);
         if (currentItem.getTrailImageFilename() != null) {
-            Utils.displayThumbnail(context, holder.trailImage, currentItem.getTrailImageFilename());
+            Utils.displayThumbnail(context, holder.trailImage, currentItem.getTrailImageFilename(), null);
         }
         holder.trailName.setText(currentItem.getName());
         holder.trailDescription.setText(currentItem.getDescription());

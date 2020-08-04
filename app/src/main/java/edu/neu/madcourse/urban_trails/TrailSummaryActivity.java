@@ -44,7 +44,7 @@ public class TrailSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trail_summary);
         this.trail = (Trail) getIntent().getBundleExtra("bundle").getSerializable("trail");
         Log.v("TESTMD", this.trail.getTrailImageFilename());
-        Utils.displayThumbnail(this, (ImageView) findViewById(R.id.imageView3), this.trail.getTrailImageFilename());
+        Utils.displayThumbnail(this, (ImageView) findViewById(R.id.imageView3), this.trail.getTrailImageFilename(), null);
     }
 
     public void onClick(View view) {

@@ -41,7 +41,7 @@ public class TrailDetailActivity extends AppCompatActivity {
         trailStops.setText(Integer.toString(trail.getStops().size()) + " stop" + (trail.getStops().size() == 1 ? "" : "s"));
 
         if (this.trail.getTrailImageFilename() != null) {
-            Utils.displayThumbnail(this, trailImage, this.trail.getTrailImageFilename());
+            Utils.displayThumbnail(this, trailImage, this.trail.getTrailImageFilename(), null);
         }
 
     }

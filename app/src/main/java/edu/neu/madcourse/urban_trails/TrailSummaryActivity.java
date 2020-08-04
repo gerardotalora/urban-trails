@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,9 +53,9 @@ public class TrailSummaryActivity extends AppCompatActivity {
             bmp = BitmapFactory.decodeStream(is);
             is.close();
 
-            ImageView tv1;
-            tv1= findViewById(R.id.imageView3);
-            tv1.setImageBitmap(bmp);
+//            ImageView tv1;
+//            tv1= findViewById(R.id.imageView3);
+//            tv1.setImageBitmap(bmp);
 
             // Create base64 image
             Bitmap bitmapBase64 = bmp.copy(bmp.getConfig(), true);
@@ -73,7 +73,16 @@ public class TrailSummaryActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.saveTrailButton:
+            case R.id.saveStopButton:
+                EditText nameview = findViewById(R.id.stop_name);
+                EditText descriptionview = findViewById(R.id.trail_summary_description);
+
+                String name = nameview.getText().toString();
+                String description = descriptionview.getText().toString();
+
+                this.trail.setName(name);
+                this.trail.setDescription(description);
+
                 new SaveTrailInFirebase(getApplicationContext(), this.databaseReference).saveTrail(this.trail);
                 break;
         }

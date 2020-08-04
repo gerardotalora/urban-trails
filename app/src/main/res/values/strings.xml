@@ -19,4 +19,10 @@
     <string name="first_name_nlast_name">First Name\nLast Name</string>
     <string name="textview">TextView</string>
     <string name="todo">TODO</string>
+    <string name="trail_name">Trail Name</string>
+    <string name="trail_description">Trail Description</string>
+    <string name="save_trail">Save Trail</string>
+    <string name="save_stop">Save Stop</string>
+    <string name="edit_stop_name">Stop Name</string>
+    <string name="take_picture">Take Picture</string>
 </resources>

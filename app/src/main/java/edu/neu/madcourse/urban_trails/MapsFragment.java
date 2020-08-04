@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Criteria;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.time.LocalDateTime;
@@ -35,7 +37,7 @@ import edu.neu.madcourse.urban_trails.models.Trail;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnInfoWindowClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String STATE_KEY_MAP_CAMERA = "STATE_KEY_MAP_CAMERA";
@@ -81,6 +83,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
+        this.map.setOnInfoWindowClickListener(this);
         this.enableMyLocation();
         this.displayTrailOnMap();
     }
@@ -101,7 +104,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                     latLng = shiftLatLngByFeet(myLocation, 101, 0);
                 }
             } else {
-                if (this.trail.getStops().size() > 0 && myLocation == this.trail.getStops().get(this.trail.getStops().size() - 1).getLatLng()) {
+                if (this.trail.getStops().size() > 0 && myLocation.equals(this.trail.getStops().get(this.trail.getStops().size() - 1).getLatLng())) {
                     Toast.makeText(getActivity(), "You already added this stop! Try walking a little farther.", Toast.LENGTH_LONG).show();
                 }
                 latLng = myLocation;
@@ -154,7 +157,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onLocationChanged(Location location) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        Toast.makeText(getActivity(), "Location updated at " + dtf.format(LocalDateTime.now()), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "Location updated at " + dtf.format(LocalDateTime.now()), Toast.LENGTH_SHORT).show();
         this.myLocation = new LatLng(location.getLatitude(), location.getLongitude());
         if (this.trail.getStops().size() == 0) {
             Stop stop = new Stop("Starting Location", this.myLocation);
@@ -175,9 +178,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     private void subscribeToLocation() {
         Log.v("DEBUG", "subscribeToLocation");
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-        String enabledProvider = locationManager.getBestProvider(criteria, false);
+//        String enabledProvider = locationManager.getBestProvider(criteria, true);
+        String enabledProvider = locationManager.NETWORK_PROVIDER;
 
         if (enabledProvider == null) {
             Log.v("DEBUG", "Best provider is null");
@@ -258,5 +262,29 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        TrailActivity parent = (TrailActivity) getActivity();
+        if (parent != null) {
+            String stopTitle = marker.getTitle();
+            for (Stop stop : this.trail.getStops()) {
+                if (stop.getTitle().equals(stopTitle)) {
+                    parent.stopClicked(stop);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void updateStopInfo(Stop stop) {
+        for (int i = 0; i < this.trail.getStops().size(); i++) {
+            Stop oldStop = this.trail.getStops().get(i);
+            if (oldStop.getLatitude() == stop.getLatitude() && oldStop.getLongitude() == stop.getLongitude()) {
+                this.trail.getStops().set(i, stop);
+            }
+        }
+        this.displayTrailOnMap();
     }
 }

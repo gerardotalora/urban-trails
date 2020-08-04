@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavig
 
 import java.io.FileOutputStream;
 
+import edu.neu.madcourse.urban_trails.models.Stop;
 import edu.neu.madcourse.urban_trails.models.Trail;
 
 public class TrailActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
@@ -45,9 +46,9 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
 //                Toast.makeText(this, "Navigation Add Stop", Toast.LENGTH_LONG).show();
                 mapsFragment.addStop();
                 break;
-            case R.id.navigation_camera:
-                Toast.makeText(this, "Navigation Camera", Toast.LENGTH_LONG).show();
-                break;
+//            case R.id.navigation_camera:
+//                Toast.makeText(this, "Navigation Camera", Toast.LENGTH_LONG).show();
+//                break;
             case R.id.navigation_end_trail:
 //                Toast.makeText(this, "Navigation End Trail", Toast.LENGTH_LONG).show();
                 mapsFragment.getTrail(this); // Calls onEndTrailCallback
@@ -77,6 +78,24 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void stopClicked(Stop stop) {
+        Intent intent = new Intent(this, EditStopActivity.class);
+        Bundle b = new Bundle();
+        b.putSerializable("stop", stop);
+        intent.putExtra("bundle", b);
+        startActivityForResult(intent, 0);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if(resultCode == RESULT_OK) {
+                Stop stop = (Stop) data.getBundleExtra("bundle").getSerializable("stop");
+                this.mapsFragment.updateStopInfo(stop);
+            }
         }
     }
 }

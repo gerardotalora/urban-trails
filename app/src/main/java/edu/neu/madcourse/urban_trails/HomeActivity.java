@@ -40,7 +40,6 @@ public class HomeActivity extends AppCompatActivity {
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         openFragment(HomeFragment.newInstance());
-
     }
 
     public void openFragment(Fragment fragment) {

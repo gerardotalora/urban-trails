@@ -24,7 +24,7 @@
                 android:layout_margin="0dp">
 
                 <ImageView
-                    android:id="@+id/profile-pic"
+                    android:id="@+id/profilepic"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_centerInParent="true"
@@ -37,10 +37,10 @@
                     android:src="@drawable/ic_profile" />
 
                 <TextView
-                    android:id="@+id/name-user"
+                    android:id="@+id/firstlastname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/profile-pic"
+                    android:layout_below="@+id/profilepic"
                     android:layout_centerHorizontal="true"
                     android:text="User's First + Last Name"
                     android:textColor="@color/black"
@@ -51,7 +51,7 @@
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/name-user"
+                    android:layout_below="@+id/firstlastname"
                     android:layout_centerHorizontal="true"
                     android:text="username"
                     android:textColor="@color/black"
@@ -77,13 +77,14 @@
                     android:layout_centerHorizontal="true">
 
                     <TextView
+                        android:id="@+id/email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="25dp"
                         android:text="Email"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black">
+                        android:textStyle="bold">
 
                     </TextView>
 

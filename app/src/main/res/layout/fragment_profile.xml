@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/profilepic"
                     android:layout_centerHorizontal="true"
-                    android:text="User's First + Last Name"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/firstlastname"
                     android:layout_centerHorizontal="true"
-                    android:text="username"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="italic" />
@@ -81,7 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="25dp"
-                        android:text="Email"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold">

@@ -2,7 +2,9 @@ package edu.neu.madcourse.urban_trails;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,8 +41,18 @@ public class TrailDetailActivity extends AppCompatActivity {
         trailStops.setText(Integer.toString(trail.getStops().size()) + " stop" + (trail.getStops().size() == 1 ? "" : "s"));
 
         if (this.trail.getTrailImageFilename() != null) {
-            Utils.displayThumbnail(this, trailImage, this.trail.getTrailImageFilename());
+            Utils.displayThumbnail(this, trailImage, this.trail.getTrailImageFilename(), null);
         }
 
+    }
+
+    public void onClick(View view) {
+        if (view.getId() == R.id.followTrailButton) {
+            Intent intent = new Intent(this, FollowTrailActivity.class);
+            Bundle b = new Bundle();
+            b.putSerializable("trail", this.trail);
+            intent.putExtra("bundle", b);
+            startActivity(intent);
+        }
     }
 }

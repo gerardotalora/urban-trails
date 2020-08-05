@@ -54,6 +54,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     private LatLng myLocation;
 
     private Trail trail;
+    private MapsFragmentContainerActivity parent;
 
     @Nullable
     @Override
@@ -66,13 +67,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.parent = (MapsFragmentContainerActivity) getActivity();
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
         this.locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        this.trail = new Trail();
+
+        if (this.trail == null) {
+            this.trail = new Trail();
+        }
     }
 
     /**
@@ -90,6 +95,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         this.map.setOnInfoWindowClickListener(this);
         this.enableMyLocation();
         this.displayTrailOnMap();
+        this.map.setInfoWindowAdapter(this.parent);
+        if (this.trail != null) {
+            this.centerMapOnTrail();
+        }
     }
 
     /**
@@ -123,7 +132,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         this.displayTrailOnMap();
     }
 
-    public void getTrail(final TrailActivity parent) {
+    public void getTrail(final MapsFragmentContainerActivity parent) {
         final Trail trail = this.trail;
         this.centerMapOnTrail();
         this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
@@ -146,6 +155,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     }
 
     private void centerMapOnTrail() {
+        if (this.trail == null || this.trail.getStops().size() == 0) {
+            return;
+        }
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Stop stop : this.trail.getStops()) {
             builder.include(stop.getLatLng());
@@ -193,14 +205,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             Stop stop = new Stop("Starting Location", this.myLocation);
             this.trail.getStops().add(stop);
             this.displayTrailOnMap();
+            zoomToLocation(location.getLatitude(), location.getLongitude());
         }
-        zoomToLocation(location.getLatitude(), location.getLongitude());
     }
 
     private void displayTrailOnMap() {
         this.map.clear();
         for (Stop stop : this.trail.getStops()) {
-            this.map.addMarker(new MarkerOptions().position(stop.getLatLng()).title(stop.getTitle()));
+            Marker marker = this.map.addMarker(new MarkerOptions().position(stop.getLatLng()).title(stop.getTitle()));
+            marker.setTag(stop);
         }
     }
 
@@ -296,15 +309,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        TrailActivity parent = (TrailActivity) getActivity();
+        MapsFragmentContainerActivity parent = (MapsFragmentContainerActivity) getActivity();
         if (parent != null) {
-            String stopTitle = marker.getTitle();
-            for (Stop stop : this.trail.getStops()) {
-                if (stop.getTitle().equals(stopTitle)) {
-                    parent.stopClicked(stop);
-                    break;
-                }
-            }
+            Stop stop = (Stop) marker.getTag();
+            parent.stopClicked(stop);
         }
     }
 
@@ -317,4 +325,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         }
         this.displayTrailOnMap();
     }
+
+    public void setTrail(Trail trail) {
+        this.trail = trail;
+        if (this.map != null) {
+            this.centerMapOnTrail();
+        }
+    }
+
 }

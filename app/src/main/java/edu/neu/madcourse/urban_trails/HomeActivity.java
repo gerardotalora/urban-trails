@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
 import edu.neu.madcourse.urban_trails.fragments.ProfileFragment;

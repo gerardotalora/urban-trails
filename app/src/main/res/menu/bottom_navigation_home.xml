@@ -3,21 +3,21 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="@string/home" />
     <item
         android:id="@+id/navigation_search"
         android:icon="@drawable/ic_search"
-        android:title="Search" />
+        android:title="@string/search" />
     <item
         android:id="@+id/navigation_start_trail"
         android:icon="@drawable/ic_start_trail"
-        android:title="Start Trail" />
+        android:title="@string/start_trail" />
     <item
         android:id="@+id/navigation_star"
-        android:icon="@drawable/ic_star"
-        android:title="Favorites" />
+        android:icon="@drawable/ic_my_trails"
+        android:title="@string/my_trails" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile"
-        android:title="Profile" />
+        android:title="@string/profile" />
 </menu>

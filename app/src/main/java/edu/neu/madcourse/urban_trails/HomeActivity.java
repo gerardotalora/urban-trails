@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
 import edu.neu.madcourse.urban_trails.fragments.ProfileFragment;
 import edu.neu.madcourse.urban_trails.fragments.SearchFragment;
-import edu.neu.madcourse.urban_trails.fragments.StarFragment;
+import edu.neu.madcourse.urban_trails.fragments.MyTrailsFragment;
 import edu.neu.madcourse.urban_trails.fragments.StartTrailFragment;
 
 public class HomeActivity extends AppCompatActivity {
@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
                             openFragment(StartTrailFragment.newInstance("", ""));
                             return true;
                         case R.id.navigation_star:
-                            openFragment(StarFragment.newInstance("", ""));
+                            openFragment(MyTrailsFragment.newInstance());
                             return true;
                         case R.id.navigation_profile:
                             openFragment(ProfileFragment.newInstance());

@@ -106,6 +106,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
      * Should add a stop to the trail at my location.
      */
     public void addStop() {
+        this.addStop(null);
+    }
+
+    public void addStop(String stopName) {
         if (myLocation != null) {
             LatLng latLng;
 
@@ -123,8 +127,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                 latLng = myLocation;
             }
 
+            if (stopName == null) {
+                stopName = "Stop " + this.trail.getStops().size();
+            }
 
-            Stop stop = new Stop("Stop " + this.trail.getStops().size(), latLng);
+            Stop stop = new Stop(stopName, latLng);
             this.trail.getStops().add(stop);
         } else {
             Toast.makeText(getActivity(), "myLocation is null", Toast.LENGTH_LONG).show();
@@ -332,5 +339,4 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             this.centerMapOnTrail();
         }
     }
-
 }

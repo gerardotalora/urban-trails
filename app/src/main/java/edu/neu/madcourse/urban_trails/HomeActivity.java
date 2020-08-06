@@ -25,8 +25,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final String ACTIVE_FRAGMENT = "ACTIVE_FRAGMENT";
     BottomNavigationView bottomNavigation;
-    private FirebaseAuth firebaseAuth;
-    private HomeActivity activity = this;
     private Fragment activeFragment;
 
     @Override

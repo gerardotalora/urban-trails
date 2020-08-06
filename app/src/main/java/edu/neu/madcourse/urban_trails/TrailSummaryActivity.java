@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
 import edu.neu.madcourse.urban_trails.models.Stop;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
@@ -60,6 +62,8 @@ public class TrailSummaryActivity extends AppCompatActivity {
                 this.trail.setDescription(description);
 
                 new SaveTrailInFirebase(getApplicationContext(), this.databaseReference).saveTrail(this.trail);
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
                 break;
         }
     }

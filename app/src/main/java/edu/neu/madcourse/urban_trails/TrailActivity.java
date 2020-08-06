@@ -3,7 +3,9 @@ package edu.neu.madcourse.urban_trails;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -129,5 +131,27 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
             }
         }
         return view;
+    }
+
+    @Override
+    public void onBackPressed() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(TrailActivity.this);
+        builder.setMessage("Are you sure you want to exit your trail?");
+        builder.setCancelable(true);
+        builder.setNegativeButton("Resume Trail", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.setPositiveButton("Exit Trail", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

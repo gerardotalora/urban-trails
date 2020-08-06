@@ -138,7 +138,7 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
         final AlertDialog.Builder builder = new AlertDialog.Builder(TrailActivity.this);
         builder.setMessage("Are you sure you want to exit your trail?");
         builder.setCancelable(true);
-        builder.setNegativeButton("Continue Trail", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Resume Trail", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

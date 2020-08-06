@@ -21,13 +21,13 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String username, String firstName, String lastName, String email, String password, String phoneNumer, String token) {
+    public User(String username, String firstName, String lastName, String email, String password, String phoneNumber, String token) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.phoneNumber = phoneNumer;
+        this.phoneNumber = phoneNumber;
         this.token = token;
         this.friends = new ArrayList<>();
         this.trails = new ArrayList<>();

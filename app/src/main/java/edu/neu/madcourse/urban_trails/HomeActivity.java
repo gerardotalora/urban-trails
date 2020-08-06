@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
                             openFragment(StarFragment.newInstance("", ""));
                             return true;
                         case R.id.navigation_profile:
-                            openFragment(ProfileFragment.newInstance("", ""));
+                            openFragment(ProfileFragment.newInstance());
                             return true;
                     }
                     return false;

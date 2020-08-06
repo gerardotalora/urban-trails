@@ -67,6 +67,11 @@ public class FollowTrailActivity extends AppCompatActivity implements BottomNavi
     }
 
     @Override
+    public void gpsPermissionsDenied() {
+        Toast.makeText(getApplicationContext(), "Enable GPS to see your own position on this map", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public View getInfoWindow(Marker marker) {
         return null;
     }

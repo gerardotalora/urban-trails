@@ -253,19 +253,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                // Showing the toast message
-                Toast.makeText(getActivity(),
-                        "Fine Location Permission Granted",
-                        Toast.LENGTH_SHORT)
-                        .show();
-
                 enableMyLocation();
             } else {
-                Toast.makeText(getActivity(),
-                        "Fine Location Permission Denied",
-                        Toast.LENGTH_SHORT)
-                        .show();
+                this.parent.gpsPermissionsDenied();
             }
         }
     }

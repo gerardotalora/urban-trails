@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -75,6 +76,15 @@ public class TrailActivity extends AppCompatActivity implements OnNavigationItem
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void gpsPermissionsDenied() {
+        Toast.makeText(getApplicationContext(),
+                "If you want to make a new trail, please allow this app to use GPS",
+                Toast.LENGTH_LONG)
+                .show();
+        finish();
     }
 
     public void stopClicked(Stop stop) {

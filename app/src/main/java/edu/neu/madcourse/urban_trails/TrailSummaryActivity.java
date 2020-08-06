@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -36,10 +37,12 @@ public class TrailSummaryActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private Trail trail;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.handler = new Handler();
         this.databaseReference = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.activity_trail_summary);
         this.trail = (Trail) getIntent().getBundleExtra("bundle").getSerializable("trail");
@@ -59,7 +62,7 @@ public class TrailSummaryActivity extends AppCompatActivity {
                 this.trail.setName(name);
                 this.trail.setDescription(description);
 
-                new SaveTrailInFirebase(getApplicationContext(), this.databaseReference).saveTrail(this.trail);
+                new SaveTrailInFirebase(getApplicationContext(), this.databaseReference, this.handler).saveTrail(this.trail);
                 break;
         }
     }
@@ -69,10 +72,12 @@ class SaveTrailInFirebase implements Runnable {
 
     private final DatabaseReference databaseReference;
     private final Context context;
+    private final Handler handler;
 
-    SaveTrailInFirebase(Context context, DatabaseReference databaseReference) {
+    SaveTrailInFirebase(Context context, DatabaseReference databaseReference, Handler handler) {
         this.databaseReference = databaseReference;
         this.context = context;
+        this.handler = handler;
     }
 
     public void saveTrail(final Trail trail) {
@@ -102,17 +107,17 @@ class SaveTrailInFirebase implements Runnable {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Log.v("TESTMDBT", snapshot.toString());
 
-                    User user = snapshot.getValue(User.class);
+                    final User myUser = snapshot.getValue(User.class);
 
-                    List<Trail> trails = user.getTrails();
+                    List<Trail> trails = myUser.getTrails();
                     if (trails == null) {
                         trails = new ArrayList<>();
                     }
                     trails.add(trail);
-                    user.setTrails(trails);
+                    myUser.setTrails(trails);
 
                     final List<Trail> finalTrails = trails;
-                    myUserReference.setValue(user, new DatabaseReference.CompletionListener() {
+                    myUserReference.setValue(myUser, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                             if (error == null) {
@@ -125,6 +130,9 @@ class SaveTrailInFirebase implements Runnable {
                                 @Override
                                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                     Toast.makeText(context, "Saved trail successfully!", Toast.LENGTH_LONG).show();
+                                    
+                                    new Utils.MessageSender(databaseReference, context, handler).notifyFriendsOfNewTrail(myUser);
+                                    
                                 }
                             });
                         }

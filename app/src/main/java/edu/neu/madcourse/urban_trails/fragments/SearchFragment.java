@@ -135,7 +135,7 @@ public class SearchFragment extends Fragment implements NavigationFragment {
                     }
                     if (myUser != null) {
                         for (TaggedUser taggedUser : users) {
-                            if (myUser.getFriends().contains(taggedUser.getUser().getUsername())) {
+                            if (myUser.getFriends() != null && myUser.getFriends().contains(taggedUser.getUser().getUsername())) {
                                 taggedUser.setFriend(true);
                             }
                         }

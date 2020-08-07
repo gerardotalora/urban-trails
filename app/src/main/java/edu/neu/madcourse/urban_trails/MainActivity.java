@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                             if (snapshot.hasChild(username)) {
                                 user = snapshot.child(username).getValue(User.class);
 
-                                if (!user.getToken().equals(token)) {
+                                if (user.getToken() != null && !user.getToken().equals(token)) {
                                     user.setToken(token);
                                     databaseReference.child("users").child(user.getUsername()).setValue(user);
                                 }

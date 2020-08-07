@@ -30,7 +30,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
 import edu.neu.madcourse.urban_trails.models.Stop;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;

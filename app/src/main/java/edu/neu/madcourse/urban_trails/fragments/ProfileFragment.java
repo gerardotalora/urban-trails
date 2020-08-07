@@ -30,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import edu.neu.madcourse.urban_trails.HomeActivity;
 import edu.neu.madcourse.urban_trails.R;
@@ -115,9 +116,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             if (takePictureIntent.resolveActivity(v.getContext().getPackageManager()) != null) {
                 File photoFile = null;
                 try {
-                    photoFile = Utils.createImageFile(v.getContext());
+                    photoFile = Utils.createImageFile(v.getContext(), user.getUsername());
                     this.user.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
                 } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
                 if (photoFile != null) {
                     Uri photoURI = FileProvider.getUriForFile(v.getContext(),
@@ -157,6 +159,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             databaseReference.child("users").child(user.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
+                    user.setImageFileName(Paths.get(user.getUsername(), user.getImageFileName()).toString());
                     databaseReference.child("users").child(user.getUsername()).setValue(user);
                     Uri uri = Uri.fromFile(Utils.getLocalImageFile(view.getContext(), user.getImageFileName()));
                     FirebaseStorage storage = FirebaseStorage.getInstance();

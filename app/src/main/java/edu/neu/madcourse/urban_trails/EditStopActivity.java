@@ -11,8 +11,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import edu.neu.madcourse.urban_trails.models.Stop;
 
@@ -21,6 +25,7 @@ public class EditStopActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Stop stop;
     private EditText stopNameView;
+    private String imageFilename;
 
 
     @Override
@@ -55,9 +60,11 @@ public class EditStopActivity extends AppCompatActivity {
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 File photoFile = null;
                 try {
-                    photoFile = Utils.createImageFile(this);
-                    this.stop.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    photoFile = Utils.createImageFile(this, currentUser.getDisplayName());
+                    this.imageFilename = Paths.get(currentUser.getDisplayName(), Uri.fromFile(photoFile).getLastPathSegment()).toString();
                 } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
                 if (photoFile != null) {
                     Uri photoURI = FileProvider.getUriForFile(this,
@@ -75,6 +82,7 @@ public class EditStopActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            this.stop.setImageFileName(imageFilename);
             this.displayImageForStop();
         }
     }

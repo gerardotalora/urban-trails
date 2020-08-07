@@ -96,13 +96,11 @@ class SaveTrailInFirebase implements Runnable {
                 if (stop.getImageFileName() != null) {
                     Uri uri = Uri.fromFile(Utils.getLocalImageFile(context, stop.getImageFileName()));
                     imagesRef.child(uri.getLastPathSegment()).putFile(uri);
-                    stop.setImageFileName(Paths.get(username, stop.getImageFileName()).toString());
                 }
             }
             if (trail.getTrailImageFilename() != null) {
                 Uri uri = Uri.fromFile(Utils.getLocalImageFile(context, trail.getTrailImageFilename()));
                 imagesRef.child(uri.getLastPathSegment()).putFile(uri);
-                trail.setTrailImageFilename(Paths.get(username, trail.getTrailImageFilename()).toString());
             }
 
             final DatabaseReference myUserReference = this.databaseReference.child("users").child(username);

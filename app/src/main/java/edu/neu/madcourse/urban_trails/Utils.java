@@ -78,15 +78,21 @@ public class Utils {
      * @param imageView
      * @param filename  should be relative to the storageDir
      */
-    public static void displayThumbnail(Context context, ImageView imageView, String filename, OnImageDrawnListener listener, Integer imageWidth, Integer imageHeight) {
-        if (Utils.getLocalImageFile(context, filename).isFile()) {
-            Utils.displayThumbnailFromLocal(context, imageView, filename, imageWidth, imageHeight);
-        } else {
-            Utils.displayThumbnailFromCloudStorage(context, imageView, filename, listener, imageWidth, imageHeight);
-        }
+    public static void displayThumbnail(final Context context, final ImageView imageView, final String filename, final OnImageDrawnListener listener, final Integer imageWidth, final Integer imageHeight) {
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (Utils.getLocalImageFile(context, filename).isFile()) {
+                    Utils.displayThumbnailFromLocal(handler, context, imageView, filename, imageWidth, imageHeight);
+                } else {
+                    Utils.displayThumbnailFromCloudStorage(handler, context, imageView, filename, listener, imageWidth, imageHeight);
+                }
+            }
+        }).start();
     }
 
-    private static void displayThumbnailFromLocal(Context context, ImageView imageView, String filename, Integer imageWidth, Integer imageHeight) {
+    private static void displayThumbnailFromLocal(Handler handler, Context context, final ImageView imageView, String filename, Integer imageWidth, Integer imageHeight) {
         filename = Utils.getLocalFilepath(context, filename).toString();
         final int THUMBSIZE = (imageWidth != null && imageHeight != null) ? Integer.max(imageWidth, imageHeight) : 1000;
         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(filename),
@@ -110,18 +116,20 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        imageView.setImageBitmap(thumbnail);
+        final Bitmap finalThumbnail = thumbnail;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageBitmap(finalThumbnail);
+            }
+        });
     }
 
     private static Path getLocalFilepath(Context context, String filename) {
         return Paths.get(Utils.getStorageDir(context).getAbsolutePath(), filename);
     }
 
-    private static void displayThumbnailFromCloudStorage(final Context context, final ImageView imageView, String filename, final OnImageDrawnListener listener) {
-        displayThumbnailFromCloudStorage(context, imageView, filename, listener, null, null);
-    }
-
-    private static void displayThumbnailFromCloudStorage(final Context context, final ImageView imageView, String filename, final OnImageDrawnListener listener, final Integer imageWidth, final Integer imageHeight) {
+    private static void displayThumbnailFromCloudStorage(final Handler handler, final Context context, final ImageView imageView, String filename, final OnImageDrawnListener listener, final Integer imageWidth, final Integer imageHeight) {
         Utils.getImageUrl(filename).addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -132,25 +140,28 @@ public class Utils {
                     x = x.override(imageWidth, imageHeight);
                 }
 
-                x.into(new CustomTarget<Drawable>() {
+                final RequestBuilder<Drawable> finalX = x;
+                handler.post(new Runnable() {
                     @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        imageView.setImageDrawable(resource);
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (listener != null) {
-                            listener.onImageDrawn();
-                        }
-                    }
+                    public void run() {
+                        finalX.into(new CustomTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                imageView.setImageDrawable(resource);
+                                if (listener != null) {
+                                    listener.onImageDrawn();
+                                }
+                            }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
 
+                            }
+                        });
                     }
                 });
+
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,11 +31,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.neu.madcourse.urban_trails.models.Stop;
 import edu.neu.madcourse.urban_trails.models.Trail;
@@ -218,10 +223,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
 
     private void displayTrailOnMap() {
         this.map.clear();
+        List<LatLng> stopCoordinates = new ArrayList<>();
         for (Stop stop : this.trail.getStops()) {
             Marker marker = this.map.addMarker(new MarkerOptions().position(stop.getLatLng()).title(stop.getTitle()));
             marker.setTag(stop);
+            stopCoordinates.add(stop.getLatLng());
         }
+
+        this.map.addPolyline(new PolylineOptions().addAll(stopCoordinates).color(Color.parseColor("PURPLE")));
     }
 
 

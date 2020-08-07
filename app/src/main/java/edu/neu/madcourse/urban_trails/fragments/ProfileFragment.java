@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +83,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
         profileImage = view.findViewById(R.id.profilepic);
+
+        ImageView editProfilePicButton = view.findViewById(R.id.editProfilePic);
+        editProfilePicButton.setOnClickListener(this);
 
         setProfile();
         return view;
@@ -151,8 +156,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             }
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         SetUser setUser = new SetUser();
         setUser.setUser(user);
+
     }
 
     private class SetUser implements Runnable {
@@ -174,6 +186,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     databaseReference.child("users").child(user.getUsername()).setValue(user);
+                    Uri uri = Uri.fromFile(Utils.getLocalImageFile(view.getContext(), user.getImageFileName()));
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    StorageReference imagesRef = storageRef.child("images").child(user.getUsername());
+                    imagesRef.child(uri.getLastPathSegment()).putFile(uri);
                     displayImageForProfile();
                 }
 
@@ -199,7 +216,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void displayImageForProfile() {
-        Utils.displayThumbnail(view.getContext(), profileImage, this.user.getImageFileName(), null);
+        if (this.user.getImageFileName() != null) {
+            Utils.displayThumbnail(view.getContext(), profileImage, this.user.getImageFileName(), null);
+        }
     }
 }
 

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.neu.madcourse.urban_trails.R;
+import edu.neu.madcourse.urban_trails.Utils;
 import edu.neu.madcourse.urban_trails.models.User;
 
 public class SearchFragment extends Fragment {
@@ -156,8 +157,11 @@ public class SearchFragment extends Fragment {
                 }
             });
 
-
-            imageView.setImageResource(R.drawable.ic_urban_trails_logo_foreground);
+            if (users.get(position).getImageFileName() != null) {
+                displayImageForProfile(users.get(position), imageView);
+            } else {
+                imageView.setImageResource(R.drawable.ic_baseline_person_24);
+            }
             String text = users.get(position).getUsername();
             String userDesc = users.get(position).getFirstName() + "\n" + users.get(position).getLastName();
             textView.setText(text);
@@ -165,6 +169,12 @@ public class SearchFragment extends Fragment {
             Log.i(TAG, users.get(position).getUsername());
             return userView;
 
+        }
+
+        private void displayImageForProfile(User user, ImageView imageView) {
+            if (user.getImageFileName() != null) {
+                Utils.displayThumbnail(view.getContext(), imageView, user.getImageFileName(), null);
+            }
         }
     }
 

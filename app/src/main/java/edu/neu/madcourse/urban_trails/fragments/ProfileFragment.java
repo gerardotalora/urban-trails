@@ -101,7 +101,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 name.setText(fullName);
                 username.setText(user.getUsername());
                 email.setText(user.getEmail());
-                if (!(user.getImageFileName() == null)) {
+                if (user.getImageFileName() != null) {
                     displayImageForProfile();
                 }
             }
@@ -112,29 +112,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
-//    public void setProfilePic(View v) {
-//        if (view.getId() == R.id.editProfilePic) {
-//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            if (takePictureIntent.resolveActivity(view.getContext().getPackageManager()) != null) {
-//                File photoFile = null;
-//                try {
-//                    photoFile = Utils.createImageFile(view.getContext());
-//                    this.user.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
-//                } catch (IOException ex) {
-//                }
-//                if (photoFile != null) {
-//                    Uri photoURI = FileProvider.getUriForFile(view.getContext(),
-//                            "edu.neu.madcourse.urban_trails.file_provider",
-//                            photoFile);
-//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//                }
-//            }
-//        }
-//        SetUser setUser = new SetUser();
-//        setUser.setUser(user);
-//    }
 
     @Override
     public void onClick(View v) {

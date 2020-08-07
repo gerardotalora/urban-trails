@@ -17,6 +17,7 @@ public class User implements Serializable {
     private String token;
     private List<String> friends;
     private List<Trail> trails;
+    private String imageFileName;
 
     public User() {
     }
@@ -105,4 +106,11 @@ public class User implements Serializable {
         this.trails = trails;
     }
 
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+    }
 }

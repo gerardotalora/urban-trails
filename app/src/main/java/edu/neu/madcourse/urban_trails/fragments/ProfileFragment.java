@@ -1,13 +1,21 @@
 package edu.neu.madcourse.urban_trails.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,21 +25,36 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import edu.neu.madcourse.urban_trails.R;
+import edu.neu.madcourse.urban_trails.Utils;
+import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements View.OnClickListener {
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private DatabaseReference databaseReference;
     private FirebaseUser firebaseUser;
-    private FirebaseAuth firebaseAuth;
     private String userString;
     private TextView name;
     private TextView username;
     private TextView email;
+    private ImageView profileImage;
     private View view;
+    private User user;
+    private Handler handler = new Handler();
 
     public ProfileFragment() {
     }
@@ -45,7 +68,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -60,6 +82,10 @@ public class ProfileFragment extends Fragment {
         name = view.findViewById(R.id.firstlastname);
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
+        profileImage = view.findViewById(R.id.profilepic);
+
+        ImageView editProfilePicButton = view.findViewById(R.id.editProfilePic);
+        editProfilePicButton.setOnClickListener(this);
 
         setProfile();
         return view;
@@ -69,12 +95,15 @@ public class ProfileFragment extends Fragment {
         databaseReference.child("users").child(userString).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
+                user = snapshot.getValue(User.class);
 
                 String fullName = user.getFirstName() + " " + user.getLastName();
                 name.setText(fullName);
                 username.setText(user.getUsername());
                 email.setText(user.getEmail());
+                if (!(user.getImageFileName() == null)) {
+                    displayImageForProfile();
+                }
             }
 
             @Override
@@ -82,5 +111,114 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getContext(), "Error connecting to database", Toast.LENGTH_SHORT).show();
             }
         });
-    }}
+    }
+
+//    public void setProfilePic(View v) {
+//        if (view.getId() == R.id.editProfilePic) {
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            if (takePictureIntent.resolveActivity(view.getContext().getPackageManager()) != null) {
+//                File photoFile = null;
+//                try {
+//                    photoFile = Utils.createImageFile(view.getContext());
+//                    this.user.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
+//                } catch (IOException ex) {
+//                }
+//                if (photoFile != null) {
+//                    Uri photoURI = FileProvider.getUriForFile(view.getContext(),
+//                            "edu.neu.madcourse.urban_trails.file_provider",
+//                            photoFile);
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//                }
+//            }
+//        }
+//        SetUser setUser = new SetUser();
+//        setUser.setUser(user);
+//    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.editProfilePic) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(v.getContext().getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = Utils.createImageFile(v.getContext());
+                    this.user.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
+                } catch (IOException ex) {
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(v.getContext(),
+                            "edu.neu.madcourse.urban_trails.file_provider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        SetUser setUser = new SetUser();
+        setUser.setUser(user);
+
+    }
+
+    private class SetUser implements Runnable {
+
+        private User user;
+
+        SetUser() {
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+            this.runInNewThread();
+        }
+
+        @Override
+        public void run() {
+
+            databaseReference.child("users").child(user.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    databaseReference.child("users").child(user.getUsername()).setValue(user);
+                    Uri uri = Uri.fromFile(Utils.getLocalImageFile(view.getContext(), user.getImageFileName()));
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    StorageReference imagesRef = storageRef.child("images").child(user.getUsername());
+                    imagesRef.child(uri.getLastPathSegment()).putFile(uri);
+                    displayImageForProfile();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    showToast("Error connecting to database");
+                }
+            });
+        }
+
+        private void showToast(final String toastText) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(view.getContext(), toastText, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        public void runInNewThread() {
+            new Thread(this).start();
+        }
+    }
+
+    private void displayImageForProfile() {
+        if (this.user.getImageFileName() != null) {
+            Utils.displayThumbnail(view.getContext(), profileImage, this.user.getImageFileName(), null);
+        }
+    }
+}
 

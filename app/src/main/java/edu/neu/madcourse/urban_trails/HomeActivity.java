@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             };
 
+
     public void onClick(View view) {
         Intent intent = new Intent(this, TrailActivity.class);
         startActivity(intent);

@@ -56,6 +56,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle(R.string.search_for_friends);
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 

@@ -58,6 +58,7 @@ public class MyTrailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle(R.string.my_trails);
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 

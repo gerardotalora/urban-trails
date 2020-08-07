@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment implements NavigationFragment {
     private DatabaseReference databaseReference;
     private Handler handler = new Handler();
     private View homeView;
+    private View noFriendsTextView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -88,6 +89,8 @@ public class HomeFragment extends Fragment implements NavigationFragment {
 //                rAdapter.notifyDataSetChanged();
             }
         });
+
+        this.noFriendsTextView = homeView.findViewById(R.id.noFriendsTextView);
 
         return homeView;
     }
@@ -143,6 +146,13 @@ public class HomeFragment extends Fragment implements NavigationFragment {
                     for (Trail trail : sortedUserTrails) {
                         recyclerTrails.add(new RecyclerTrail(username, trail));
                     }
+
+                    if (recyclerTrails.size() == 0) {
+                        noFriendsTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noFriendsTextView.setVisibility(View.GONE);
+                    }
+
                     rAdapter.notifyDataSetChanged();
 
                 }

@@ -23,9 +23,9 @@ import edu.neu.madcourse.urban_trails.fragments.StartTrailFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private static final String ACTIVE_FRAGMENT = "ACTIVE_FRAGMENT";
     BottomNavigationView bottomNavigation;
-    private FirebaseAuth firebaseAuth;
-    private HomeActivity activity = this;
+    private Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +38,18 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+        if (savedInstanceState != null) {
+            Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, ACTIVE_FRAGMENT);
+            if (fragment != null) {
+                openFragment(fragment);
+                return;
+            }
+        }
         openFragment(HomeFragment.newInstance());
     }
 
     public void openFragment(Fragment fragment) {
+        this.activeFragment = fragment;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(null);
@@ -102,5 +110,11 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, ACTIVE_FRAGMENT, this.activeFragment);
     }
 }

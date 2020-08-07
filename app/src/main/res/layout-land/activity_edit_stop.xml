@@ -11,27 +11,28 @@
         android:id="@+id/saveStopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:background="@color/colorAccent"
         android:onClick="onClick"
         android:text="@string/save_stop"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/takePictureButton" />
+        app:layout_constraintStart_toEndOf="@+id/takePictureButton"
+        app:layout_constraintTop_toBottomOf="@+id/stop_name" />
 
     <Button
         android:id="@+id/takePictureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:background="@color/red"
         android:onClick="onClick"
         android:text="@string/take_picture"
         android:textColor="@color/black"
         android:textColorLink="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/saveStopButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/saveStopButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stop_name" />
 

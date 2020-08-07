@@ -9,4 +9,6 @@ public interface MapsFragmentContainerActivity extends GoogleMap.InfoWindowAdapt
     void stopClicked(Stop stop);
 
     void onEndTrailCallback(Trail trail);
+
+    void gpsPermissionsDenied();
 }

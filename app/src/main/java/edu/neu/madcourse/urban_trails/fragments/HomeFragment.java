@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment implements NavigationFragment {
 
     private final String TAG = "Home Fragment";
 
-    private ArrayList<RecyclerTrail> recyclerTrails = new ArrayList<>();
+    private List<RecyclerTrail> recyclerTrails = new ArrayList<>();
     private RecyclerView recyclerView;
     private RvAdapter rAdapter;
     private RecyclerView.LayoutManager rLayoutManger;
@@ -141,20 +141,30 @@ public class HomeFragment extends Fragment implements NavigationFragment {
                     if (userTrails == null) {
                         userTrails = new ArrayList<>();
                     }
-
-                    List<Trail> sortedUserTrails = sortTrailsByTimestamp(userTrails);
-                    for (Trail trail : sortedUserTrails) {
+                    for (Trail trail : userTrails) {
                         recyclerTrails.add(new RecyclerTrail(username, trail));
                     }
-
                     if (recyclerTrails.size() == 0) {
                         noFriendsTextView.setVisibility(View.VISIBLE);
                     } else {
                         noFriendsTextView.setVisibility(View.GONE);
                     }
 
+                    List<RecyclerTrail> sortedUserTrails = sortTrailsByTimestamp(recyclerTrails);
+                    recyclerTrails = sortedUserTrails;
                     rAdapter.notifyDataSetChanged();
+                }
 
+                private List<RecyclerTrail> sortTrailsByTimestamp(List<RecyclerTrail> userTrails) {
+                    Collections.sort(userTrails, new Comparator<RecyclerTrail>() {
+
+                        @Override
+                        public int compare(RecyclerTrail o1, RecyclerTrail o2) {
+                            return o2.getTrail().getTimestamp().compareTo(o1.getTrail().getTimestamp());
+                        }
+                    });
+
+                    return userTrails;
                 }
 
                 @Override
@@ -175,18 +185,6 @@ public class HomeFragment extends Fragment implements NavigationFragment {
 
         public void runInNewThread() {
             new Thread(this).start();
-        }
-
-        private List<Trail> sortTrailsByTimestamp(List<Trail> userTrails) {
-            Collections.sort(userTrails, new Comparator<Trail>() {
-
-                @Override
-                public int compare(Trail o1, Trail o2) {
-                    return o2.getTimestamp().compareTo(o1.getTimestamp());
-                }
-            });
-
-            return userTrails;
         }
     }
 

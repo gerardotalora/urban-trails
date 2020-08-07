@@ -105,14 +105,10 @@ public class HomeActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                break;
-            case R.id.action_signout:
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                break;
+        if (item.getItemId() == R.id.action_signout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

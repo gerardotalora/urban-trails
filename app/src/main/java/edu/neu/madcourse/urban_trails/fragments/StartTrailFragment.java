@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.TrailActivity;
 
@@ -17,7 +18,7 @@ import edu.neu.madcourse.urban_trails.TrailActivity;
  * Use the {@link StartTrailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StartTrailFragment extends Fragment implements View.OnClickListener {
+public class StartTrailFragment extends Fragment implements View.OnClickListener, NavigationFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +54,7 @@ public class StartTrailFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.start_trail);
+//        getActivity().setTitle(R.string.start_trail);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -71,5 +72,10 @@ public class StartTrailFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), TrailActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.start_trail;
     }
 }

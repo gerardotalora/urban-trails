@@ -31,12 +31,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,13 +153,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             @Override
             public void onSnapshotReady(Bitmap bitmap) {
                 try {
-                    File imageFile = Utils.createImageFile(getActivity());
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    File imageFile = Utils.createImageFile(getActivity(), currentUser.getDisplayName());
                     try (FileOutputStream out = new FileOutputStream(imageFile)) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 50, out);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    trail.setTrailImageFilename(Uri.fromFile(imageFile).getLastPathSegment());
+                    trail.setTrailImageFilename(Paths.get(currentUser.getDisplayName(), Uri.fromFile(imageFile).getLastPathSegment()).toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

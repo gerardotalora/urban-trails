@@ -52,12 +52,12 @@ import java.util.Scanner;
 import edu.neu.madcourse.urban_trails.models.User;
 
 public class Utils {
-    public static File createImageFile(Context context) throws IOException {
+    public static File createImageFile(Context context, String username) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Utils.getStorageDir(context);
-
+        File storageDir = Paths.get(Utils.getStorageDir(context).toURI()).resolve(Paths.get(username)).toFile();
+        storageDir.mkdir();
         // Save a file: path for use with ACTION_VIEW intents
         return File.createTempFile(
                 imageFileName,  /* prefix */
@@ -84,7 +84,7 @@ public class Utils {
             @Override
             public void run() {
                 if (Utils.getLocalImageFile(context, filename).isFile()) {
-                    Utils.displayThumbnailFromLocal(handler, context, imageView, filename, imageWidth, imageHeight);
+                    Utils.displayThumbnailFromLocal(handler, context, imageView, filename, listener, imageWidth, imageHeight);
                 } else {
                     Utils.displayThumbnailFromCloudStorage(handler, context, imageView, filename, listener, imageWidth, imageHeight);
                 }
@@ -92,7 +92,7 @@ public class Utils {
         }).start();
     }
 
-    private static void displayThumbnailFromLocal(Handler handler, Context context, final ImageView imageView, String filename, Integer imageWidth, Integer imageHeight) {
+    private static void displayThumbnailFromLocal(Handler handler, Context context, final ImageView imageView, String filename, final OnImageDrawnListener listener, Integer imageWidth, Integer imageHeight) {
         filename = Utils.getLocalFilepath(context, filename).toString();
         final int THUMBSIZE = (imageWidth != null && imageHeight != null) ? Integer.max(imageWidth, imageHeight) : 1000;
         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(filename),
@@ -121,6 +121,9 @@ public class Utils {
             @Override
             public void run() {
                 imageView.setImageBitmap(finalThumbnail);
+                if (listener != null) {
+                    listener.onImageDrawn();
+                }
             }
         });
     }

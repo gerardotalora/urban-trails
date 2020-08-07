@@ -75,6 +75,24 @@
             android:text="@string/first_name_nlast_name"
             android:textColor="@android:color/black" />
 
+        <TextView
+            android:id="@+id/existingFriendTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_description"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="119dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toEndOf="@+id/user_image"
+            android:gravity="center"
+            android:text="Friends!"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

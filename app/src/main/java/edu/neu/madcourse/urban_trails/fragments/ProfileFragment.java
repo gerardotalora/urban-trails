@@ -30,13 +30,15 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import edu.neu.madcourse.urban_trails.HomeActivity;
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.Utils;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener, NavigationFragment {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private DatabaseReference databaseReference;
@@ -62,7 +64,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.profile);
+//        getActivity().setTitle(R.string.profile);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -115,9 +117,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             if (takePictureIntent.resolveActivity(v.getContext().getPackageManager()) != null) {
                 File photoFile = null;
                 try {
-                    photoFile = Utils.createImageFile(v.getContext());
+                    photoFile = Utils.createImageFile(v.getContext(), user.getUsername());
                     this.user.setImageFileName(Uri.fromFile(photoFile).getLastPathSegment());
                 } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
                 if (photoFile != null) {
                     Uri photoURI = FileProvider.getUriForFile(v.getContext(),
@@ -139,6 +142,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    @Override
+    public int getTitle() {
+        return R.string.profile;
+    }
+
     private class SetUser implements Runnable {
 
         private User user;
@@ -157,6 +165,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             databaseReference.child("users").child(user.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
+                    user.setImageFileName(Paths.get(user.getUsername(), user.getImageFileName()).toString());
                     databaseReference.child("users").child(user.getUsername()).setValue(user);
                     Uri uri = Uri.fromFile(Utils.getLocalImageFile(view.getContext(), user.getImageFileName()));
                     FirebaseStorage storage = FirebaseStorage.getInstance();

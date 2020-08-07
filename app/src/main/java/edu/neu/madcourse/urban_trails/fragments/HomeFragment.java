@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
 import edu.neu.madcourse.urban_trails.TrailDetailActivity;
@@ -35,7 +36,7 @@ import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements NavigationFragment {
 
     private final String TAG = "Home Fragment";
 
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference databaseReference;
     private Handler handler = new Handler();
     private View homeView;
+    private View noFriendsTextView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -60,7 +62,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.friends_trail_feed);
+//        getActivity().setTitle(R.string.friends_trail_feed);
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -88,6 +90,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        this.noFriendsTextView = homeView.findViewById(R.id.noFriendsTextView);
+
         return homeView;
     }
 
@@ -108,6 +112,11 @@ public class HomeFragment extends Fragment {
 
         recyclerView.setAdapter(rAdapter);
         recyclerView.setLayoutManager(rLayoutManger);
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.friends_trail_feed;
     }
 
     private class GetTrails implements Runnable {
@@ -137,6 +146,13 @@ public class HomeFragment extends Fragment {
                     for (Trail trail : sortedUserTrails) {
                         recyclerTrails.add(new RecyclerTrail(username, trail));
                     }
+
+                    if (recyclerTrails.size() == 0) {
+                        noFriendsTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noFriendsTextView.setVisibility(View.GONE);
+                    }
+
                     rAdapter.notifyDataSetChanged();
 
                 }

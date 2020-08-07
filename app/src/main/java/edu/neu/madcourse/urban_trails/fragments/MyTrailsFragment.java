@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
 import edu.neu.madcourse.urban_trails.TrailDetailActivity;
@@ -35,7 +36,7 @@ import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class MyTrailsFragment extends Fragment {
+public class MyTrailsFragment extends Fragment implements NavigationFragment {
 
     private final String TAG = "Home Fragment";
 
@@ -46,6 +47,7 @@ public class MyTrailsFragment extends Fragment {
     private DatabaseReference databaseReference;
     private Handler handler = new Handler();
     private View myTrailsView;
+    private View noTrailsTextView;
 
     public MyTrailsFragment() {
         // Required empty public constructor
@@ -72,6 +74,8 @@ public class MyTrailsFragment extends Fragment {
 
         createTrailsList();
         createRecyclerView(myTrailsView);
+
+        noTrailsTextView = myTrailsView.findViewById(R.id.noTrailsTextView);
 
         rAdapter.setOnItemClickListener(new RvAdapter.ItemClickListener() {
             @Override
@@ -111,6 +115,11 @@ public class MyTrailsFragment extends Fragment {
         recyclerView.setLayoutManager(rLayoutManger);
     }
 
+    @Override
+    public int getTitle() {
+        return R.string.my_trails;
+    }
+
     private class GetTrails implements Runnable {
 
         private String username;
@@ -137,6 +146,13 @@ public class MyTrailsFragment extends Fragment {
                     for (Trail trail : sortedMyTrails) {
                         recyclerTrails.add(new RecyclerTrail(null, trail));
                     }
+
+                    if (recyclerTrails.size() == 0) {
+                        noTrailsTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noTrailsTextView.setVisibility(View.GONE);
+                    }
+
                     rAdapter.notifyDataSetChanged();
 
                 }

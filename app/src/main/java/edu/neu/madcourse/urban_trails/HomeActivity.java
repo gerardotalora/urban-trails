@@ -54,6 +54,11 @@ public class HomeActivity extends AppCompatActivity {
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        try {
+            this.setTitle(((NavigationFragment) fragment).getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =

@@ -153,7 +153,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                 try {
                     File imageFile = Utils.createImageFile(getActivity());
                     try (FileOutputStream out = new FileOutputStream(imageFile)) {
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, out);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

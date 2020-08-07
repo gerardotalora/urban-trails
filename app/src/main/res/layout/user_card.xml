@@ -26,8 +26,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/description"
-            android:padding="3dp"
-            tools:srcCompat="@tools:sample/avatars[1]" />
+            android:padding="3dp" />
 
         <TextView
             android:id="@+id/user_name"

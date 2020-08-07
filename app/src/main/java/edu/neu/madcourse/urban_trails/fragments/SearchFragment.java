@@ -30,11 +30,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.Utils;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements NavigationFragment {
 
     private final String TAG = "Search Fragment";
 
@@ -76,6 +77,11 @@ public class SearchFragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.search_for_friends;
     }
 
     private class UsersRunnable implements Runnable {

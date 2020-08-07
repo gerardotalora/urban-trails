@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
 import edu.neu.madcourse.urban_trails.TrailDetailActivity;
@@ -35,7 +36,7 @@ import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class MyTrailsFragment extends Fragment {
+public class MyTrailsFragment extends Fragment implements NavigationFragment {
 
     private final String TAG = "Home Fragment";
 
@@ -109,6 +110,11 @@ public class MyTrailsFragment extends Fragment {
 
         recyclerView.setAdapter(rAdapter);
         recyclerView.setLayoutManager(rLayoutManger);
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.my_trails;
     }
 
     private class GetTrails implements Runnable {

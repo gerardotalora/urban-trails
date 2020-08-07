@@ -33,11 +33,12 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import edu.neu.madcourse.urban_trails.HomeActivity;
+import edu.neu.madcourse.urban_trails.NavigationFragment;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.Utils;
 import edu.neu.madcourse.urban_trails.models.User;
 
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener, NavigationFragment {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private DatabaseReference databaseReference;
@@ -63,7 +64,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.profile);
+//        getActivity().setTitle(R.string.profile);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -139,6 +140,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         SetUser setUser = new SetUser();
         setUser.setUser(user);
 
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.profile;
     }
 
     private class SetUser implements Runnable {

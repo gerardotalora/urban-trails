@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
 import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
@@ -24,7 +25,7 @@ import edu.neu.madcourse.urban_trails.models.Trail;
 
 public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
     private final Context context;
-    private ArrayList<RecyclerTrail> trails;
+    private List<RecyclerTrail> trails;
     private ItemClickListener listener;
 
     public interface ItemClickListener {
@@ -63,7 +64,7 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
         }
     }
 
-    public RvAdapter(Context context, ArrayList<RecyclerTrail> trails) {
+    public RvAdapter(Context context, List<RecyclerTrail> trails) {
         this.context = context;
         this.trails = trails;
     }

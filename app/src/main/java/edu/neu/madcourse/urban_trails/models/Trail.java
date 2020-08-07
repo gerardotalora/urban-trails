@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Trail implements Serializable {
 
+    private String username;
     private String name;
     private String description;
     private List<Stop> stops;

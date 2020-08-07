@@ -30,7 +30,7 @@
             tools:srcCompat="@drawable/ic_profile" />
 
         <TextView
-            android:id="@+id/trail_name"
+            android:id="@+id/friend_name"
             android:layout_width="194dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -40,20 +40,35 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="5dp"
             android:layout_toEndOf="@+id/trail_image"
-            android:text="@string/item_name"
+            android:text="@string/username"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/trail_name"
+            android:layout_width="194dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/friend_name"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@+id/trail_image"
+            android:text="@string/trail_name"
             android:textColor="#000000"
             android:textSize="15sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/trail_description"
-            android:layout_width="192dp"
-            android:layout_height="147dp"
+            android:layout_width="223dp"
+            android:layout_height="81dp"
             android:layout_below="@+id/trail_name"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="20dp"
             android:layout_toEndOf="@+id/trail_image"

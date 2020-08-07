@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ import java.util.List;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
 import edu.neu.madcourse.urban_trails.TrailDetailActivity;
+import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
@@ -37,7 +39,7 @@ public class MyTrailsFragment extends Fragment {
 
     private final String TAG = "Home Fragment";
 
-    private ArrayList<Trail> trails = new ArrayList<>();
+    private ArrayList<RecyclerTrail> recyclerTrails = new ArrayList<>();
     private RecyclerView recyclerView;
     private RvAdapter rAdapter;
     private RecyclerView.LayoutManager rLayoutManger;
@@ -79,7 +81,7 @@ public class MyTrailsFragment extends Fragment {
 
                 //TODO For some reason sending a base64 image string via a bundle causes an error.  Need to investigate reason.  Changing image.
 //                trails.get(position).setTrailImageFilename("image");
-                b.putSerializable("trail", trails.get(position));
+                b.putSerializable("trail", recyclerTrails.get(position).getTrail());
                 intent.putExtra("bundle", b);
                 startActivity(intent);
 //                rAdapter.notifyDataSetChanged();
@@ -102,7 +104,7 @@ public class MyTrailsFragment extends Fragment {
         recyclerView = myTrailsView.findViewById(R.id.recycler_view_my_trails);
         recyclerView.setHasFixedSize(true);
         rLayoutManger = new LinearLayoutManager(myTrailsView.getContext());
-        rAdapter = new RvAdapter(getActivity(), trails);
+        rAdapter = new RvAdapter(getActivity(), recyclerTrails);
 
         recyclerView.setAdapter(rAdapter);
         recyclerView.setLayoutManager(rLayoutManger);
@@ -131,7 +133,9 @@ public class MyTrailsFragment extends Fragment {
                         myTrails = new ArrayList<>();
                     }
                     List<Trail> sortedMyTrails = sortTrailsByTimestamp(myTrails);
-                    trails.addAll(sortedMyTrails);
+                    for (Trail trail : sortedMyTrails) {
+                        recyclerTrails.add(new RecyclerTrail(null, trail));
+                    }
                     rAdapter.notifyDataSetChanged();
 
                 }

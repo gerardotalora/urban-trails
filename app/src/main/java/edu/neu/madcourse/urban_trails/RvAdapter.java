@@ -19,11 +19,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 
 import edu.neu.madcourse.urban_trails.fragments.HomeFragment;
+import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
 import edu.neu.madcourse.urban_trails.models.Trail;
 
 public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
     private final Context context;
-    private ArrayList<Trail> trails;
+    private ArrayList<RecyclerTrail> trails;
     private ItemClickListener listener;
 
     public interface ItemClickListener {
@@ -38,12 +39,14 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
         public ImageView trailImage;
         public TextView trailName;
         public TextView trailDescription;
+        public TextView trailUser;
 
         public RviewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
             trailImage = itemView.findViewById(R.id.trail_image);
             trailName = itemView.findViewById(R.id.trail_name);
             trailDescription = itemView.findViewById(R.id.trail_description);
+            trailUser = itemView.findViewById(R.id.friend_name);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -60,7 +63,7 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
         }
     }
 
-    public RvAdapter(Context context, ArrayList<Trail> trails) {
+    public RvAdapter(Context context, ArrayList<RecyclerTrail> trails) {
         this.context = context;
         this.trails = trails;
     }
@@ -75,13 +78,18 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.RviewHolder> {
     //TODO Get trail image and data
     @Override
     public void onBindViewHolder(@NonNull final RviewHolder holder, int position) {
-        Trail currentItem = trails.get(position);
+        RecyclerTrail currentItem = trails.get(position);
         holder.trailImage.setImageResource(R.drawable.ic_camera);
-        if (currentItem.getTrailImageFilename() != null) {
-            Utils.displayThumbnail(context, holder.trailImage, currentItem.getTrailImageFilename(), null);
+        if (currentItem.getTrail().getTrailImageFilename() != null) {
+            Utils.displayThumbnail(context, holder.trailImage, currentItem.getTrail().getTrailImageFilename(), null);
         }
-        holder.trailName.setText(currentItem.getName());
-        holder.trailDescription.setText(currentItem.getDescription());
+        if (currentItem.getUsername() == null) {
+            holder.trailUser.setVisibility(View.GONE);
+        } else {
+            holder.trailUser.setText(currentItem.getUsername());
+        }
+        holder.trailName.setText(currentItem.getTrail().getName());
+        holder.trailDescription.setText(currentItem.getTrail().getDescription());
     }
 
     @Override

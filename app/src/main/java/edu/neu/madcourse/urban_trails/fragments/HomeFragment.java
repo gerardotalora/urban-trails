@@ -31,6 +31,7 @@ import java.util.List;
 import edu.neu.madcourse.urban_trails.R;
 import edu.neu.madcourse.urban_trails.RvAdapter;
 import edu.neu.madcourse.urban_trails.TrailDetailActivity;
+import edu.neu.madcourse.urban_trails.models.RecyclerTrail;
 import edu.neu.madcourse.urban_trails.models.Trail;
 import edu.neu.madcourse.urban_trails.models.User;
 
@@ -38,7 +39,7 @@ public class HomeFragment extends Fragment {
 
     private final String TAG = "Home Fragment";
 
-    private ArrayList<Trail> trails = new ArrayList<>();
+    private ArrayList<RecyclerTrail> recyclerTrails = new ArrayList<>();
     private RecyclerView recyclerView;
     private RvAdapter rAdapter;
     private RecyclerView.LayoutManager rLayoutManger;
@@ -75,13 +76,12 @@ public class HomeFragment extends Fragment {
         rAdapter.setOnItemClickListener(new RvAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position) {
-//                Toast.makeText(homeView.getContext(), trails.get(position).getName(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), TrailDetailActivity.class);
                 Bundle b = new Bundle();
 
                 //TODO For some reason sending a base64 image string via a bundle causes an error.  Need to investigate reason.  Changing image.
 //                trails.get(position).setTrailImageFilename("image");
-                b.putSerializable("trail", trails.get(position));
+                b.putSerializable("trail", recyclerTrails.get(position).getTrail());
                 intent.putExtra("bundle", b);
                 startActivity(intent);
 //                rAdapter.notifyDataSetChanged();
@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
         recyclerView = homeView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         rLayoutManger = new LinearLayoutManager(homeView.getContext());
-        rAdapter = new RvAdapter(getActivity(), trails);
+        rAdapter = new RvAdapter(getActivity(), recyclerTrails);
 
         recyclerView.setAdapter(rAdapter);
         recyclerView.setLayoutManager(rLayoutManger);
@@ -132,8 +132,11 @@ public class HomeFragment extends Fragment {
                     if (userTrails == null) {
                         userTrails = new ArrayList<>();
                     }
+
                     List<Trail> sortedUserTrails = sortTrailsByTimestamp(userTrails);
-                    trails.addAll(sortedUserTrails);
+                    for (Trail trail : sortedUserTrails) {
+                        recyclerTrails.add(new RecyclerTrail(username, trail));
+                    }
                     rAdapter.notifyDataSetChanged();
 
                 }

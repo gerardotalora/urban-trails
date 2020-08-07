@@ -41,8 +41,8 @@ public class SearchFragment extends Fragment implements NavigationFragment {
 
     private DatabaseReference databaseReference;
     private Handler handler = new Handler();
-    ArrayList<User> users = new ArrayList<>();
-    ArrayAdapter<User> adapter;
+    ArrayList<TaggedUser> users = new ArrayList<>();
+    ArrayAdapter<TaggedUser> adapter;
     private ListView usersListView;
     private View view;
 
@@ -57,7 +57,6 @@ public class SearchFragment extends Fragment implements NavigationFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.search_for_friends);
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -77,6 +76,29 @@ public class SearchFragment extends Fragment implements NavigationFragment {
 
 
         return view;
+    }
+
+    private class TaggedUser {
+        private final User user;
+
+        public User getUser() {
+            return user;
+        }
+
+        public boolean isFriend() {
+            return isFriend;
+        }
+
+        public void setFriend(boolean friend) {
+            isFriend = friend;
+        }
+
+        private boolean isFriend;
+
+        public TaggedUser(User user) {
+            this.user = user;
+            this.isFriend = false;
+        }
     }
 
     @Override
@@ -100,13 +122,25 @@ public class SearchFragment extends Fragment implements NavigationFragment {
             databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
+                    User myUser = null;
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Log.i(TAG, dataSnapshot.toString());
                         User user = dataSnapshot.getValue(User.class);
-                        users.add(user);
-                        adapter.notifyDataSetChanged();
+                        if (!user.getUsername().equals(FirebaseAuth.getInstance().getCurrentUser().getDisplayName())) {
+                            TaggedUser taggedUser = new TaggedUser(user);
+                            users.add(taggedUser);
+                        } else {
+                            myUser = user;
+                        }
                     }
-
+                    if (myUser != null) {
+                        for (TaggedUser taggedUser : users) {
+                            if (myUser.getFriends().contains(taggedUser.getUser().getUsername())) {
+                                taggedUser.setFriend(true);
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -130,12 +164,12 @@ public class SearchFragment extends Fragment implements NavigationFragment {
         }
     }
 
-    private class UserAdapter extends ArrayAdapter<User> {
+    private class UserAdapter extends ArrayAdapter<TaggedUser> {
 
         private Context context;
-        private List<User> users;
+        private List<TaggedUser> users;
 
-        public UserAdapter(Context context, List<User> stickers) {
+        public UserAdapter(Context context, List<TaggedUser> stickers) {
             super(context, -1, stickers);
             this.context = context;
             this.users = stickers;
@@ -150,30 +184,41 @@ public class SearchFragment extends Fragment implements NavigationFragment {
             ImageView imageView = (ImageView) userView.findViewById(R.id.user_image);
 
             final int friendPostion = position;
-            Button addButton = userView.findViewById(R.id.add_button);
-            addButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (currentUser != null) {
-                        final String name = currentUser.getDisplayName();
-                        Log.i(TAG, "adding user");
-                        AddFriend addFriend = new AddFriend();
-                        addFriend.addFriend(name, users.get(friendPostion).getUsername());
-                    }
-                }
-            });
+            final Button addButton = userView.findViewById(R.id.add_button);
+            final TextView existingFriendTextView = userView.findViewById(R.id.existingFriendTextView);
 
-            if (users.get(position).getImageFileName() != null) {
-                displayImageForProfile(users.get(position), imageView);
+            if (users.get(position).isFriend()) {
+                addButton.setVisibility(View.INVISIBLE);
+                existingFriendTextView.setVisibility(View.VISIBLE);
+            } else {
+                addButton.setVisibility(View.VISIBLE);
+                existingFriendTextView.setVisibility(View.GONE);
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (currentUser != null) {
+                            final String name = currentUser.getDisplayName();
+                            Log.i(TAG, "adding user");
+                            AddFriend addFriend = new AddFriend();
+                            addFriend.addFriend(name, users.get(friendPostion).getUser().getUsername());
+                            addButton.setVisibility(View.INVISIBLE);
+                            existingFriendTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            }
+
+            if (users.get(position).getUser().getImageFileName() != null) {
+                displayImageForProfile(users.get(position).getUser(), imageView);
             } else {
                 imageView.setImageResource(R.drawable.ic_baseline_person_24);
             }
-            String text = users.get(position).getUsername();
-            String userDesc = users.get(position).getFirstName() + "\n" + users.get(position).getLastName();
+            String text = users.get(position).getUser().getUsername();
+            String userDesc = users.get(position).getUser().getFirstName() + "\n" + users.get(position).getUser().getLastName();
             textView.setText(text);
             textViewDesc.setText(userDesc);
-            Log.i(TAG, users.get(position).getUsername());
+            Log.i(TAG, users.get(position).getUser().getUsername());
             return userView;
 
         }

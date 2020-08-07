@@ -47,6 +47,7 @@ public class MyTrailsFragment extends Fragment implements NavigationFragment {
     private DatabaseReference databaseReference;
     private Handler handler = new Handler();
     private View myTrailsView;
+    private View noTrailsTextView;
 
     public MyTrailsFragment() {
         // Required empty public constructor
@@ -73,6 +74,8 @@ public class MyTrailsFragment extends Fragment implements NavigationFragment {
 
         createTrailsList();
         createRecyclerView(myTrailsView);
+
+        noTrailsTextView = myTrailsView.findViewById(R.id.noTrailsTextView);
 
         rAdapter.setOnItemClickListener(new RvAdapter.ItemClickListener() {
             @Override
@@ -143,6 +146,13 @@ public class MyTrailsFragment extends Fragment implements NavigationFragment {
                     for (Trail trail : sortedMyTrails) {
                         recyclerTrails.add(new RecyclerTrail(null, trail));
                     }
+
+                    if (recyclerTrails.size() == 0) {
+                        noTrailsTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        noTrailsTextView.setVisibility(View.GONE);
+                    }
+
                     rAdapter.notifyDataSetChanged();
 
                 }

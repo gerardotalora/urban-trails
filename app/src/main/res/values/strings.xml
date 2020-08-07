@@ -27,10 +27,10 @@
     <string name="my_trails">My Trails</string>
     <string name="profile">Profile</string>
     <string name="start_trail">Start Trail</string>
-    <string name="search">Search</string>
+    <string name="search">Friends</string>
     <string name="home">Home</string>
     <string name="friends_trail_feed">Friends Trail Feed</string>
-    <string name="search_for_friends">Search For Friends</string>
+    <string name="search_for_friends">Find Friends</string>
     <string name="tap_to_edit">Tap to edit</string>
     <string name="username">Username</string>
     <string name="trail_name">Trail Name</string>
